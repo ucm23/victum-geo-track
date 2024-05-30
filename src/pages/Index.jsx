@@ -187,12 +187,12 @@ const data = {
     },
 }
 
-const Index = () => {
+const Index = ({ company_id, index }) => {
     const location = useLocation();
     const { pathname } = location;
 
     return (
-        <NavBar index={data[pathname]?.index}>
+        <NavBar index={index}>
             <h1>home</h1>
         </NavBar>
     );

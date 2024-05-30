@@ -107,8 +107,8 @@ const CreateUser = ({ company_id }) => {
                             .select()
                         if (!error) {
                             actions.resetForm();
-                            const { error } = await supabase.from('user').update({ no_econ: `TA${data[0]?.id}` }).eq('id', data[0]?.id).select()
-                            if (!error) openNotification('success', `El usuario se registro correctamente.\nLe hemos añadido una clave unica de trabajador TA${data[0]?.id}`)
+                            const { error } = await supabase.from('user').update({ no_econ: `NE-${data[0]?.id}` }).eq('id', data[0]?.id).select()
+                            if (!error) openNotification('success', `El usuario se registro correctamente.\nLe hemos añadido una clave unica de trabajador NE-${data[0]?.id}`)
                             else openNotification('error')
                         } else openNotification('error')
                     } catch (error) {
@@ -137,7 +137,8 @@ const CreateUser = ({ company_id }) => {
                                 </Link>
                                 <h2
                                     style={{
-                                        marginLeft: 15,
+                                        margin: 15,
+                                        marginTop: 0,
                                         fontSize: 19,
                                         fontWeight: '600',
                                         color: 'black'

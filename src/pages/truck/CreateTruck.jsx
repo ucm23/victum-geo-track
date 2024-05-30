@@ -51,6 +51,7 @@ const CreateTruck = ({ company_id }) => {
 
     const input = getInputProps()
     const [tabIndex, setTabIndex] = useState(0)
+    const [errors, setErrors] = useState(false)
 
     const [api, contextHolder] = notification.useNotification();
 
@@ -119,60 +120,6 @@ const CreateTruck = ({ company_id }) => {
                     high: "",
                     broad: "",
                     long: "",
-
-
-
-                    /*model character varying null,
-                    plate character varying null,
-                    tarjet character varying null,
-                    in_function boolean null,
-                    is_active boolean null,
-                    brand character varying null,
-                    sub_brand character varying null,
-                    no_econ character varying null,
-                    no_serie character varying null,
-                    group_id bigint null,
-                    id_jobs bigint null,
-                    class character varying null,
-                    motor character varying null,
-                    fuel character varying null,
-                    weight real null,
-                    no_axis smallint null,
-                    tires smallint null,
-                    liters real null,
-                    tons real null,
-                    people smallint null,
-                    high real null,
-                    broad real null,
-                    long real null,
-                    capacity_fuel real null,*/
-
-                    /*
-                    brand
-                    broad
-                    capacity_fuel
-                    class
-                    fuel
-                    group_id
-                    high
-                    in_function
-                    is_active
-                    liters
-                    long
-                    model
-                    motor
-                    no_axis
-                    no_econ
-                    no_serie
-                    people
-                    plate
-                    sub_brand
-                    tarjet
-                    tires
-                    tons
-                    weight
-                    */
-
                 }}
                 onSubmit={async (values, actions) => {
                     try {
@@ -191,13 +138,40 @@ const CreateTruck = ({ company_id }) => {
                             no_axis: parseFloat(values?.no_axis),
                             tires: parseFloat(values?.tires),
                             people: parseFloat(values?.people),
-                            //no_econ: values?.no_econ
+                            no_econ: ''
                         }
-                        /*if (condition) {
-                            
-                        }*/
-                        const { data, error } = await supabase
-                            .from('truck')
+
+
+                        actions.resetForm();
+                        actions.setValues({
+                            model: "",
+                            plate: "",
+                            tarjet: "",
+                            //in_function: "",
+                            //is_active: "",
+                            //status: "",
+                            brand: "",
+                            sub_brand: "",
+                            no_econ: "",
+                            no_serie: "",
+                            group_id: "",
+
+                            class: "",
+                            motor: "",
+                            fuel: "",
+                            capacity_fuel: 0,
+                            weight: 0,
+                            no_axis: 0,
+                            tires: 0,
+                            liters: 0,
+                            tons: 0,
+                            people: 0,
+                            high: 0,
+                            broad: 0,
+                            long: 0,
+                        })
+                        //actions.resetForm();
+                        const { data, error } = await supabase.from('truck')
                             .insert([
                                 {
                                     ...newValues,
@@ -208,8 +182,27 @@ const CreateTruck = ({ company_id }) => {
                             .select()
                         if (!error) {
                             actions.resetForm();
-                            openNotification('success', `El vehículo ha sido registrado correctamente.`)
-                        } else openNotification('error')
+                            actions.setValues({
+                                capacity_fuel: 0,
+                                weight: 0,
+                                no_axis: 0,
+                                tires: 0,
+                                liters: 0,
+                                tons: 0,
+                                people: 0,
+                                high: 0,
+                                broad: 0,
+                                long: 0,
+                            })
+                            const { error } = await supabase.from('truck').update({ no_econ: `TA-${data[0]?.id}` }).eq('id', data[0]?.id).select()
+                            if (!error) openNotification('success', `El vehículo ha sido registrado correctamente.\nLe hemos añadido una clave unica de trabajador TA-${data[0]?.id}`)
+                            else openNotification('error')
+                        } else {
+                            openNotification('error')
+                            setErrors(true)
+                            return 0;
+                        }
+
                         setTabIndex(0)
                         //console.log("🚀 ~ onSubmit= ~ data:", data)
                         //console.log("🚀 ~ error:", error)
@@ -238,14 +231,15 @@ const CreateTruck = ({ company_id }) => {
                                 <Link to="/truck">
                                     <Button icon={<ArrowLeftOutlined />} type="link">Vehículos</Button>
                                 </Link>
-                                <h2
+                                <h1
                                     style={{
-                                        marginLeft: 15,
+                                        margin: 15,
+                                        marginTop: 0,
                                         fontSize: 19,
                                         fontWeight: '600',
                                         color: 'black'
                                     }}
-                                >Agregar vehículo</h2>
+                                >Agregar vehículo</h1>
                             </div>
                             {/*<div
                                 style={{
@@ -381,7 +375,7 @@ const CreateTruck = ({ company_id }) => {
                                                     </div>
                                                 </Card>
 
-                                                <Card mt={2}>
+                                                {/*<Card mt={2}>
                                                     <h1 className='title-card-form'>Asignación de Vehiculo</h1>
                                                     <div className='form-body-card'>
                                                         <Stack className='form-field'>
@@ -399,7 +393,7 @@ const CreateTruck = ({ company_id }) => {
                                                             </FormControl>
                                                         </Stack>
                                                     </div>
-                                                </Card>
+                                                                </Card>*/}
                                                 <Divider mt={6} mb={6} />
                                                 <ButtonGroup pb={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <ButtonChakra onClick={() => navigate('/truck')} variant="link" style={{ color: '#1677ff', fontWeight: '300' }}>Cancelar</ButtonChakra>
@@ -474,7 +468,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Altura</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -487,7 +481,7 @@ const CreateTruck = ({ company_id }) => {
                                                                             <h1 className='form-label'>Ancho</h1>
                                                                         </FormLabel>
                                                                         {/*<Input {...input} />*/}
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -499,7 +493,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Longitud</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -511,7 +505,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Peso</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -525,7 +519,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>No de ejes</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                         <h1 className='form-helper'>No = Número</h1>
@@ -538,7 +532,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>No de llantas</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -550,7 +544,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>No de personas</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -564,7 +558,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Capacidad de litros</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -576,7 +570,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Capacidad de toneladas</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -605,7 +599,7 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Capacidad de combustible</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput>
+                                                                        <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
                                                                     </FormControl>
@@ -639,9 +633,11 @@ const CreateTruck = ({ company_id }) => {
                                                             //onClick={() => props.submitForm().then(navigate('/users/'))}
                                                             onClick={() => {
                                                                 props.submitForm();
-                                                                setTimeout(() => {
-                                                                    navigate('/truck/');
-                                                                }, 2500)
+                                                                if (errors) {
+                                                                    setTimeout(() => {
+                                                                        navigate('/truck/');
+                                                                    }, 2500)
+                                                                }
                                                             }}
                                                         >
                                                             Guardar

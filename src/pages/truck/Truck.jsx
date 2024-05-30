@@ -65,7 +65,7 @@ import { Tabs } from 'antd';
 import { Field, Form, Formik } from 'formik';
 const { TabPane } = Tabs;
 
-const Truck = ({ company_id }) => {
+const Truck = ({ company_id, index  }) => {
     const location = useLocation();
     const { pathname } = location;
 
@@ -206,7 +206,7 @@ const Truck = ({ company_id }) => {
 
 
     return (
-        <NavBar index={1}>
+        <NavBar index={index}>
             <Layout
                 style={{
                     height: '100vh',

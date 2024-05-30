@@ -66,7 +66,7 @@ import { Tabs } from 'antd';
 import { Field, Form, Formik } from 'formik';
 const { TabPane } = Tabs;
 
-const User = ({ company_id }) => {
+const User = ({ company_id, index  }) => {
     const location = useLocation();
     const { pathname } = location;
 
@@ -193,10 +193,8 @@ const User = ({ company_id }) => {
         );
     };
 
-
-
     return (
-        <NavBar index={1}>
+        <NavBar index={index}>
             <Layout
                 style={{
                     height: '100vh',
@@ -334,7 +332,7 @@ const User = ({ company_id }) => {
                                         <tr>
                                             <th className={`${!scrolling && "sticky-left"} bg-80`}><Checkbox></Checkbox></th>
                                             <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                            <th className='th-center'>NO ECON</th>
+                                            <th className='th-center'>NO EMPLEADO</th>
                                             <th>NOMBRE</th>
                                             <th>CORREO</th>
                                             <th>Clasificación</th>

@@ -59,7 +59,7 @@ const NavBar = ({ index, key_, children }) => {
 
     const { token: { colorBgContainer } } = theme.useToken();
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     useEffect(() => {
         //console.log("🚀 ~ NavBar ~ index, key:", index, key_)
@@ -73,6 +73,26 @@ const NavBar = ({ index, key_, children }) => {
                 overflow: 'hidden'
             }}
         >
+            <Header
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: 'white',
+                }}
+            >
+                <div>
+                    <div className="btn-menu-header" onClick={() => setCollapsed(!collapsed)} >
+                        <MenuOutlined />
+                    </div>
+                </div>
+                <img
+                    src="/side-bar-logo.png"
+                    alt="/side-bar-logo.png"
+                    style={{ height: 55 }}
+                />
+                <h1 className='header-title'>Victum Geo Truck</h1>
+            </Header>
+            <Divider />
 
             {/*} <Divider />*/}
             <Layout>
@@ -82,11 +102,10 @@ const NavBar = ({ index, key_, children }) => {
                     //onCollapse={(value) => setCollapsed(value)}
                     //width={collapsed ? 0 : 225}
                     style={{
-                        //background: colorBgContainer,
+                        backgroundColor: colorBgContainer,
                         borderRightWidth: 0.5
                     }}
                 >
-
                     <div
                         style={{
                             display: 'flex',
@@ -96,7 +115,8 @@ const NavBar = ({ index, key_, children }) => {
                         }}
                     >
                         <Menu
-                            mode='vertical'
+                            //mode='vertical'
+                            mode="inline"
                             defaultSelectedKeys={[`${index}`]}
                             //defaultOpenKeys={[`${key_}`]}
                             style={{
@@ -152,26 +172,7 @@ const NavBar = ({ index, key_, children }) => {
                 <Layout
                 //className='layout'
                 >
-                    <Header
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            background: 'white',
-                        }}
-                    >
-                        <div>
-                            <div className="btn-menu-header" onClick={() => setCollapsed(!collapsed)} >
-                                <MenuOutlined />
-                            </div>
-                        </div>
-                        <img
-                            src="/side-bar-logo.png"
-                            alt="/side-bar-logo.png"
-                            style={{ height: 55 }}
-                        />
-                        <h1 className='header-title'>Victum Geo Truck</h1>
-                    </Header>
-                    <Divider />
+
                     <Content>
                         {children}
                     </Content>

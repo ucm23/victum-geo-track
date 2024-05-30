@@ -101,7 +101,6 @@ const CreateRoad = ({ company_id }) => {
 
     const input = getInputProps()
     const [tabIndex, setTabIndex] = useState(0)
-    const [errors, setErrors] = useState(false)
 
     const [api, contextHolder] = notification.useNotification();
 
@@ -129,8 +128,8 @@ const CreateRoad = ({ company_id }) => {
     const [maps, setMaps] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [suggestions, setSuggestions] = useState([]);
-    const [mapCenter, setMapCenter] = useState({ lat: 0.0, lng: 0.0 });
-    const [markerPosition, setMarkerPosition] = useState({ lat: 0.0, lng: 0.0 });
+    const [mapCenter, setMapCenter] = useState({ lat: 59.955413, lng: 30.337844 });
+    const [markerPosition, setMarkerPosition] = useState({ lat: 59.955413, lng: 30.337844 });
     const center = { lat: 48.8584, lng: 2.2945 }
 
     useEffect(() => {
@@ -298,17 +297,11 @@ const CreateRoad = ({ company_id }) => {
             console.log("🚀 ~ calculateRoute ~ results.routes[0].legs[0].distance.text:", results.routes[0].legs[0].distance.text)
             console.log("🚀 ~ calculateRoute ~ results.routes[0].legs[0].duration.text:", results.routes[0].legs[0].duration.text)
             console.log("🚀 ~ calculateRoute ~ results:", results)
-            setTabIndex(2)
         } catch (error) {
             console.log("🚀 ~ calculateRoute ~ error:", error)
-            openNotification('error')
+        } finally {
+            setTabIndex(2)
         }
-    }
-
-    const getPoint = (index) => {
-        if (index === 0) return 'Origen'
-        if (index + 1 === items.length) return 'Destino'
-        return 'Parada'
     }
 
     return (
@@ -316,16 +309,28 @@ const CreateRoad = ({ company_id }) => {
             <Formik
                 initialValues={{
                     name: "",
-                    cost: "0",
+                    cost: "",
                     description: "",
                 }}
                 onSubmit={async (values, actions) => {
                     try {
-                        setErrors(false)
                         actions.setSubmitting(true)
                         console.log(values)
+                        console.log(values)
                         const { name, cost, description, } = values;
-                        const { data, error } = await supabase.from('routes')
+                        /*const { data, error } = await supabase
+                            .from('truck')
+                            .insert([
+                                {
+                                    model: values?.model,
+                                    group_id: parseInt(values?.group_id)
+                                },
+                            ])
+                            .select()*/
+                        //console.log("🚀 ~ onSubmit= ~ data:", data)
+                        //console.log("🚀 ~ error:", error)
+                        const { data, error } = await supabase
+                            .from('routes')
                             .insert([
                                 {
                                     name,
@@ -338,17 +343,9 @@ const CreateRoad = ({ company_id }) => {
                             .select()
                         console.log("🚀 ~ onSubmit= ~ data:", data)
                         console.log("🚀 ~ error:", error)
-                        if (!error) {
-                            actions.resetForm();
-                            openNotification('success', `La ruta de conveniencia ha sido registrada correctamente.`)
-                        } else {
-                            openNotification('error')
-                            setErrors(true)
-                            return 0;
-                        }
-                        //actions.resetForm();
-                        //actions.setFieldValue('cost', 0);
-                        actions.setValues({ cost: 0 });
+                        actions.resetForm();
+                        actions.setFieldValue('cost', '0');
+                        actions.setValues({ cost: '0' });
                         setItems([])
                         setTabIndex(0)
                     } catch (error) {
@@ -371,7 +368,7 @@ const CreateRoad = ({ company_id }) => {
                                 backgroundColor: 'white'
                             }}
                         >
-                            {contextHolder}
+                             {contextHolder}
                             <div>
                                 <Link to="/routes">
                                     <Button icon={<ArrowLeftOutlined />} type="link">Rutas</Button>
@@ -379,7 +376,6 @@ const CreateRoad = ({ company_id }) => {
                                 <h1
                                     style={{
                                         margin: 15,
-                                        marginTop: 0,
                                         fontSize: 19,
                                         fontWeight: '600',
                                         color: 'black'
@@ -415,7 +411,7 @@ const CreateRoad = ({ company_id }) => {
                                         <FileTextOutlined />
                                         <h1 className='item-list-tab'> Puntos</h1>
                                     </Tab>
-                                    <Tab isDisabled={/*items.length < 2*/ true}>
+                                    <Tab isDisabled={items.length < 2}>
                                         <FileTextOutlined />
                                         <h1 className='item-list-tab'> Ruta optimizada</h1>
                                     </Tab>
@@ -449,7 +445,7 @@ const CreateRoad = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Costo</h1>
                                                                         </FormLabel>
-                                                                        <NumberInput value={field.value}>
+                                                                        <NumberInput defaultValue={field.value}>
                                                                             <NumberInputField {...field} />
                                                                             <NumberInputStepper>
                                                                                 <NumberIncrementStepper />
@@ -500,7 +496,7 @@ const CreateRoad = ({ company_id }) => {
                                             <div style={{ marginRight: 15, width: '100%', }} >
                                                 <Card pb={1}>
                                                     <div className='flex-row-center-vertical-between-wrap'>
-                                                        <h1 className='title-card-form pb-1'>Puntos (Origen-Paradas-Destino)</h1>
+                                                        <h1 className='title-card-form pb-1'>Puntos de parada</h1>
                                                         <div className='flex-row-center-vertical-between-wrap'>
                                                             {items.length >= 2 &&
                                                                 <Button
@@ -508,6 +504,7 @@ const CreateRoad = ({ company_id }) => {
                                                                     type="primary"
                                                                     className='btn-add-item' icon={<SyncOutlined />} fontWeight='bold' iconPosition={'start'} size='middle'>Optimizar ruta</Button>
                                                             }
+
                                                             <Button
                                                                 onClick={onOpen}
                                                                 className='btn-add-item mr-20' icon={<PlusOutlined />} fontWeight='bold' iconPosition={'start'} size='middle'>Agregar</Button>
@@ -525,11 +522,12 @@ const CreateRoad = ({ company_id }) => {
                                                                 <thead className="header-routes">
                                                                     <tr>
                                                                         <th></th>
+                                                                        <th className={`${!scrolling && "sticky-left"} bg-fff`}><Checkbox></Checkbox></th>
                                                                         <th className={`${!scrolling && "sticky-left"} bg-fff`}>#</th>
-                                                                        <th>ORDEN</th>
                                                                         <th>NOMBRE</th>
                                                                         <th>DIRECCIÓN</th>
-                                                                        <th>COORDENADAS</th>
+                                                                        <th>LATITUD</th>
+                                                                        <th>LONGITUD</th>
                                                                         <th></th>
                                                                     </tr>
                                                                 </thead>
@@ -557,17 +555,18 @@ const CreateRoad = ({ company_id }) => {
                                                                                                             <HolderOutlined />
                                                                                                         </div>
                                                                                                     </td>
+                                                                                                    <td className={`${!scrolling && "sticky-left"} bg-fff`}><Checkbox isChecked={item?.isChecked}></Checkbox></td>
                                                                                                     <td className={`${!scrolling && "sticky-left"} bg-fff`}>{index + 1}</td>
-                                                                                                    <td>{getPoint(index)}</td>
                                                                                                     <td>{item.name}</td>
                                                                                                     <td>{item.direction}</td>
-                                                                                                    <td>{item.latitude}, {item.longitude}</td>
+                                                                                                    <td>{item.latitude}</td>
+                                                                                                    <td>{item.longitude}</td>
                                                                                                     <td style={{ display: 'flex', flexDirection: 'row' }}>
-                                                                                                        {/*<a onClick={(e) => e.preventDefault()} >
+                                                                                                        <a onClick={(e) => e.preventDefault()} >
                                                                                                             <div className="table-column-logo" style={{ marginRight: 5 }}>
                                                                                                                 <EditOutlined />
                                                                                                             </div>
-                                                                                            </a>*/}
+                                                                                                        </a>
                                                                                                         <a onClick={() => removeItemById(item?.id)} >
                                                                                                             <div className="table-column-logo" style={{ marginRight: 5 }}>
                                                                                                                 <DeleteOutlined />
@@ -682,7 +681,8 @@ const CreateRoad = ({ company_id }) => {
                                                             style={{ /*backgroundColor: '#1677ff',*/ fontWeight: '300', color: '#1677ff' }}
                                                             isLoading={props.isSubmitting}
                                                             //type='submit'
-                                                            onClick={() => props.submitForm()}
+                                                            onClick={() => props.submitForm().then(props.setFieldValue('cost', '0'))}
+
                                                         >
                                                             Guardar & Añadir otro
                                                         </ButtonChakra>
@@ -692,15 +692,7 @@ const CreateRoad = ({ company_id }) => {
                                                             style={{ backgroundColor: '#1677ff', fontWeight: '300', color: 'white' }}
                                                             isLoading={props.isSubmitting}
                                                             //type='submit'
-                                                            //onClick={() => props.submitForm().then(navigate('/routes/'))}
-                                                            onClick={() => {
-                                                                props.submitForm();
-                                                                if (errors) {
-                                                                    setTimeout(() => {
-                                                                        navigate('/routes/');
-                                                                    }, 2500)
-                                                                }
-                                                            }}
+                                                            onClick={() => props.submitForm().then(navigate('/routes/'))}
                                                         >
                                                             Guardar
                                                         </ButtonChakra>
@@ -726,33 +718,32 @@ const CreateRoad = ({ company_id }) => {
                                         console.log(values)
                                         console.log("🚀 ~ inputValue:", inputValue)
                                         console.log("🚀 ~ markerPosition:", markerPosition)
-                                        const maxId = Math.max(items.map(item => Number(item?.id))) || 0;
-                                        console.log("🚀 ~ maxId:", maxId)
                                         let obj = {
-                                            //"id": `${items.length + 1}`,
-                                            "id": `${maxId + 1}`,
+                                            "id": `${items.length + 1}`,
                                             "name": values?.name_address,
                                             "direction": inputValue,
                                             "latitude": markerPosition?.lat,
                                             "longitude": markerPosition?.lng
                                         }
+
+                                        //points.push(obj)
                                         setItems([...items, obj]);
                                         actions.resetForm();
                                         setInputValue("")
                                     } catch (error) {
                                         console.log("🚀 ~ onSubmit={ ~ error:", error)
                                     } finally {
-                                        actions.setSubmitting(false)
+                                        //actions.setSubmitting(false)
                                         console.log("🚀 ~ items:", items)
                                     }
 
                                 }}
+                            //validationSchema={validationSchema}
                             >
                                 {(props) => (
                                     <Form>
                                         <Modal
                                             onClose={onClose} size={'xl'} isOpen={isOpen} scrollBehavior={'inside'}
-                                            closeOnOverlayClick={false}
                                         >
                                             <ModalOverlay />
                                             <ModalContent>
@@ -769,7 +760,7 @@ const CreateRoad = ({ company_id }) => {
                                                                     </FormLabel>
                                                                     <Input {...field} />
                                                                     {form.errors.name_address && <h1 className='form-error'>{form.errors.name_address}</h1>}
-                                                                    <h1 className='form-helper'>e. g. Gasolinera, Est. de servicio, Cuidad, Estado etc.</h1>
+                                                                    <h1 className='form-helper'>Distintivo e. g. Cuidad, Estado etc.</h1>
                                                                 </FormControl>
                                                             )}
                                                         </Field>
@@ -830,7 +821,7 @@ const CreateRoad = ({ company_id }) => {
                                                                 yesIWantToUseGoogleMapApiInternals
                                                             />
                                                         </div>
-                                                        <h1 className='form-error italic'>* Da click sobre el mapa para pinta un marcador preciso</h1>
+                                                        <h1 className='form-helper italic'>**Da click sobre el mapa para pinta un marcador preciso**</h1>
                                                     </Box>
 
                                                 </ModalBody>

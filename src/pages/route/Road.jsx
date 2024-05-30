@@ -54,7 +54,7 @@ import { Tabs } from 'antd';
 import { Field, Form, Formik } from 'formik';
 const { TabPane } = Tabs;
 
-const Road = ({ company_id }) => {
+const Road = ({ company_id, index }) => {
     const location = useLocation();
     const { pathname } = location;
 
@@ -188,7 +188,7 @@ const Road = ({ company_id }) => {
 
 
     return (
-        <NavBar index={5}>
+        <NavBar index={index}>
             <Layout
                 style={{
                     height: '100vh',
@@ -240,7 +240,7 @@ const Road = ({ company_id }) => {
                         style={{
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'space-between',
+                            justifyContent: 'flex-end',
                             backgroundColor: 'white',
                             padding: 12
                         }}
@@ -257,7 +257,7 @@ const Road = ({ company_id }) => {
                             </PopoverContent>
                     </Popover>*/}
 
-                        <Formik
+                        {/*<Formik
                             initialValues={{
                                 plate: "",
                             }}
@@ -270,7 +270,7 @@ const Road = ({ company_id }) => {
                         >
                             {(props) => (
                                 <Form>
-                                    <Field name='plate' /*validate={validate}*/>
+                                    <Field name='plate'>
                                         {({ field, form }) => (
                                             <FormControl isInvalid={form.errors.plate && form.touched.plate}>
                                                 <InputGroup>
@@ -299,7 +299,7 @@ const Road = ({ company_id }) => {
 
                                 </Form>
                             )}
-                        </Formik>
+                        </Formik>*/}
                         {/*<Button className='btn-filters' shape="round" icon={<DownOutlined />} iconPosition='end'>Grupo</Button>*/}
 
                         <div

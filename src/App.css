@@ -1,3 +1,5 @@
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
 #root {
   margin: 0;
   padding: 0;
@@ -93,7 +95,7 @@
 
 :where(.css-dev-only-do-not-override-17seli4).ant-layout-header {
   height: 60px;
-  background: var(--color-slate);
+  /*background: var(--color-slate);*/
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 0;
@@ -108,8 +110,10 @@
 }
 
 .btn-menu-header {
-  padding: 0px;
-  margin: 0px 16px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
+  margin-right: 12px;
 }
 
 .pillar {
@@ -212,7 +216,7 @@ img:hover {
 }
 
 :where(.css-dev-only-do-not-override-zl9ks2).ant-layout .ant-layout-sider-trigger {
-  background: var(--color-purple);
+  background-color: var(--color-purple);
 }
 
 @media (max-width: 952px) {
