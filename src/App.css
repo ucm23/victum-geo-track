@@ -102,6 +102,10 @@
   padding-right: 0;
 }
 
+:where(.css-17seli4).ant-layout-header {
+  height: 60px;
+}
+
 .header-title {
   font-size: x-large;
   font-weight: bold;
