@@ -104,6 +104,7 @@
 
 :where(.css-17seli4).ant-layout-header {
   height: 60px;
+  padding: 4px 0px;
 }
 
 .header-title {
