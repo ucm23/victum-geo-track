@@ -1,0 +1,222 @@
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+
+:root {
+  --color-blue: #303ab2;
+  --color-orange: #ff9d00;
+  --color-red: #ff574a;
+  --color-green: #5db73c;
+  --color-slate: #495375;
+  --color-cyan: #00adff;
+  --color-purple: #26086c;
+  --color-pink: #db5750;
+}
+
+.ant-layout.css-dev-only-do-not-override-zl9ks2 {
+  min-height: 93vh;
+}
+
+.ant-layout.css-zl9ks2 {
+  min-height: 93vh;
+}
+
+.title-h1 {
+  border-collapse: collapse;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 35px;
+  margin: 0;
+}
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-layout-header {
+  padding: 0 24px;
+}
+
+:where(.css-zl9ks2).ant-layout-header {
+  padding: 0 24px;
+}
+
+.sub-title-h1 {
+  font-size: 20px;
+  line-height: 30px;
+  margin: 1.25em 0 0;
+  font-weight: 500;
+}
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-layout-header {
+  padding: 0 24px;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-layout-header {
+  height: 60px;
+  background: var(--color-slate);
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.header-title {
+  font-size: x-large;
+  font-weight: bold;
+  padding-left: 12px;
+  font-style: italic;
+}
+
+.btn-menu-header {
+  padding: 0px;
+  margin: 0px 16px;
+}
+
+.pillar {
+  content: "";
+  display: block;
+  width: 150px;
+  height: 4px;
+  background: #a5a4a4;
+  margin: 22px 0 12px;
+}
+
+h2 {
+  visibility: inherit;
+  font-variant-ligatures: none;
+  box-sizing: border-box;
+  margin: 20px 0;
+  margin-bottom: 30px;
+  text-rendering: optimizelegibility;
+  font-weight: 600;
+
+  line-height: 1.22;
+  color: var(--color-purple);
+  margin-top: 0;
+}
+
+p {
+  visibility: inherit;
+  color: #353535;
+  font-size: 1.05em;
+  font-variant-ligatures: none;
+  line-height: 1.5;
+  box-sizing: border-box;
+  margin: 10px 0;
+}
+
+h3 {
+  visibility: inherit;
+  font-variant-ligatures: none;
+  box-sizing: border-box;
+  margin: 20px 0;
+  text-rendering: optimizelegibility;
+  color: var(--color-purple);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.215;
+}
+
+h4 {
+  visibility: inherit;
+  font-variant-ligatures: none;
+  box-sizing: border-box;
+  text-rendering: optimizelegibility;
+  color: var(--color-purple);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.215;
+}
+
+.img {
+  margin-bottom: 22px;
+}
+
+.img-home {
+  max-height: 275px;
+}
+
+.andes-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  border-collapse: collapse;
+  font-size: 16px;
+  list-style-type: none;
+  -webkit-font-smoothing: antialiased;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 12px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .12);
+  margin-bottom: 22px;
+}
+
+Kbd {
+  color: blueviolet;
+  font-size: .95em;
+}
+
+
+kbd:hover,
+a:hover,
+img:hover {
+  cursor: crosshair;
+}
+
+.layout {
+  padding: 50px 100px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-layout .ant-layout-sider-trigger {
+  background: var(--color-purple);
+}
+
+@media (max-width: 952px) {
+  .layout {
+    padding: 12px;
+  }
+}

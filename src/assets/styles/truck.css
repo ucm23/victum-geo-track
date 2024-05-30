@@ -1,0 +1,269 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.list-trucks {
+  color: red;
+  font-size: small;
+}
+
+.tabla {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /*height: 100%;*/
+
+  /*padding: 14px;*/
+  background-color: white;
+  overflow: auto;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.tabs-container {
+  display: flex;
+  flex-direction: column;
+  /*height: 100vh; /* Ocupa toda la altura de la ventana del navegador */
+  height: calc(100% - 175px);
+}
+
+.cabecera {
+  position: sticky;
+  top: 0;
+  background-color: #eff0f1;
+  padding: 10px;
+  z-index: 2;
+}
+
+.sticky-left {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.bg-80 {
+  background-color: #eff0f1;
+}
+
+.contenido {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.pie {
+  position: sticky;
+  bottom: 0;
+  background-color: #eff0f1;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.header,
+.footer {
+  flex: 0 0 auto;
+  background-color: #eff0f1;
+  padding: 10px;
+}
+
+
+
+.table-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  border-bottom: 0.01px solid white;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.btn-add-item {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.th-center {
+  text-align: center;
+}
+
+
+.center-loader {
+  height: 100%;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+span.chakra-badge.chakra-badge-status {
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+}
+span.chakra-badge.chakra-badge-label-page {
+  border-radius: 6px;
+  padding: 8px 36px;
+  font-size: 10px;
+}
+
+.tabs-father {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.items-tabs-label {
+  font-size: large;
+}
+
+.tabs-list-tab {
+  margin: 1.2rem 0rem 0rem 1rem;
+  border-radius: 5px;
+  background-color: white;
+  align-items: flex-start;
+  height: fit-content;
+  border: 1px solid gray;
+  padding: 12px 6px 12px 1px;
+  gap: 12px;
+  width: 30%;
+  max-width: 190px;
+  position: sticky;
+  top: 1rem;
+  z-index: 2;
+}
+
+.tabs-panel-tab {
+  width: 100%;
+  padding: 0px;
+  margin: 5px;
+  max-width: 800px;
+}
+
+.item-list-tab {
+  text-align: left;
+  font-size: small;
+  margin-left: 8px;
+}
+
+.css-1ht5h5 {
+  font-size: small;
+}
+
+.tab-panel .css-a5mhaz {
+  padding: 0px;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.title-card-form {
+  font-size: 17px;
+  font-weight: 600;
+  padding: 20px 20px 0px 20px;
+}
+
+.form-body-card {
+  padding: 0px 20px 20px 20px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.requeried::after {
+  content: " *";
+  color: red;
+}
+
+.form-field {
+  margin-top: 12px;
+}
+
+.form-error {
+  font-size: 11px;
+  color: red;
+  margin-top: 2px;
+}
+
+.form-helper {
+  font-size: 11px;
+  color: gray;
+}
+
+.table-bg-by-index {
+  box-shadow: 0 1.5px 0 0 #7979792b;
+}
+
+.load-less-left {
+  border-color: #9f9f9f9f;
+  border-width: 1px;
+  border-radius: 5px 0px 0px 5px;
+  padding: 3px 6px;
+  border-right-width: 0px;
+  margin-left: 4px;
+}
+.load-less-right {
+  border-color: #9f9f9f9f;
+  border-width: 1px;
+  border-radius: 0px 5px 5px 0px;
+  padding: 3px 6px;
+}
+
+.btn-filters:active {
+  background-color: rgba(134, 134, 134, 0.32);
+}
+
+.radio-item-name {
+  font-size: 13px;
+}
+.radio-item-description {
+  font-size: 11px;
+
+}
+
+.draggable-item {
+  padding: 16px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mh-20 {
+  margin: 0 20px;
+}
