@@ -201,6 +201,15 @@ span.chakra-badge.chakra-badge-label-page {
   font-weight: 600;
   padding: 20px 20px 0px 20px;
 }
+.title-card-form-no-space {
+  font-size: 17px;
+  font-weight: 600;
+  /*padding-top: 0.5rem;*/
+}
+
+.shadow-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 .form-body-card {
   padding: 0px 20px 20px 20px;
@@ -303,4 +312,36 @@ span.chakra-badge.chakra-badge-label-page {
 h1.text-list-empty {
   font-size: 11px;
   color: gray;
+}
+
+.rbc-month-view {
+  border-radius: 3.5px;
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0);
+  background-color: #1877ff;
+  border-color: #1877ff;
+  color: white;
+}
+
+.rbc-toolbar button:hover {
+  color: #4b9bff;
+  border-color: #4b9bff;
+}
+
+.rbc-toolbar button:hover {
+  color: white;
+  background-color: #4b9bff;
+  border-color: #4b9bff;
+}
+
+.rbc-toolbar button:active:hover,
+.rbc-toolbar button:active:focus,
+.rbc-toolbar button.rbc-active:hover,
+.rbc-toolbar button.rbc-active:focus {
+  color: white;
+  background-color: #4b9bff;
+  border-color: #4b9bff;
 }

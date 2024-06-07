@@ -267,3 +267,77 @@ span.chakra-badge.chakra-badge-label-page {
 .mh-20 {
   margin: 0 20px;
 }
+
+.title-header {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.content-layout {
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.content-header-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: white;
+  flex-wrap: wrap;
+}
+.content-sub-header-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: white;
+}
+
+.table-column-logo {
+  margin-right: 5px;
+}
+
+.css-k0waxj {
+  display: flex;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+}
+
+.content-btn-modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+}
+
+.content-btn-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.smaller {
+  font-size: smaller;
+  width: 100%;
+}
+
+.right {
+  text-align: right;
+}
+
+.p2 {
+  padding: 2px;
+}
+
+.p5 {
+  padding: 5px;
+}
+
+.bg-gray {
+  background-color: #e9e9e9;
+}
+

@@ -1,23 +1,18 @@
-import React, { useEffect, useState, useRef, useMemo, forwardRef } from 'react'
-import NavBar from '../../components/NavBar';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from "antd";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, useMultiStyleConfig, useTab, Box, Heading, Input, Wrap, WrapItem, Stack, ButtonGroup, Select } from '@chakra-ui/react';
+import React, { useEffect, useState, } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { Input, Stack, ButtonGroup, } from '@chakra-ui/react';
 import { Radio, RadioGroup } from '@chakra-ui/react'
-import { ArrowLeftOutlined, ProfileOutlined, FileTextOutlined, NodeExpandOutlined } from '@ant-design/icons';
 import '../../assets/styles/user.css'
 import { Divider } from '@chakra-ui/react'
-import { Card, CardHeader, CardBody, CardFooter, Button as ButtonChakra } from '@chakra-ui/react'
-
+import { Card, Button as ButtonChakra } from '@chakra-ui/react'
+import { HomeOutlined, UserOutlined, } from '@ant-design/icons';
+import { Breadcrumb } from 'antd';
 import {
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik';
 import { supabase } from '../../utils/supabase';
-import * as Yup from 'yup';
 import { notification } from 'antd';
 
 const messagesNotification = {
@@ -33,8 +28,14 @@ const messagesNotification = {
 const CreateUser = ({ company_id }) => {
 
     const navigate = useNavigate();
-
     const [api, contextHolder] = notification.useNotification();
+    const openNotification = (type, description) => openNotificationWithIcon(type, description)
+    const [types, setTypes] = useState([]);
+    const [tabIndex, setTabIndex] = useState(0)
+    let error = 'Campo requerido';
+    //function validate(value) (!value) return error;
+    const validate = (value) => !value && error;
+    const [value, setValue] = useState('1')
 
     const openNotificationWithIcon = (type, description) => {
         api[type]({
@@ -42,11 +43,6 @@ const CreateUser = ({ company_id }) => {
             description: messagesNotification[type].description || description,
         });
     };
-
-    const openNotification = (type, description) => openNotificationWithIcon(type, description)
-
-    const [types, setTypes] = useState([]);
-    const [tabIndex, setTabIndex] = useState(0)
 
     useEffect(() => {
         getTypes();
@@ -56,13 +52,8 @@ const CreateUser = ({ company_id }) => {
         let { data: types, error } = await supabase.from('types').select("*");
         if (error) return;
         if (types.length > 0) setTypes(types)
-
         console.log("🚀 ~ getTypes ~ types:", types)
     }
-
-    let error = 'Campo requerido';
-    //function validate(value) (!value) return error;
-    const validate = (value) => !value && error;
 
     /*const validateEmail = (value) => {
         let error = 'Email requerido';
@@ -79,10 +70,8 @@ const CreateUser = ({ company_id }) => {
 
     //.matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
 
-    const [value, setValue] = useState('1')
-
     return (
-        <NavBar index={2}>
+        <div>
             <Formik
                 initialValues={{
                     name: "",
@@ -91,7 +80,6 @@ const CreateUser = ({ company_id }) => {
                     email: "",
                     no_econ: "",
                     type: "",
-
                 }}
                 onSubmit={async (values, actions) => {
                     try {
@@ -132,9 +120,27 @@ const CreateUser = ({ company_id }) => {
                         >
                             {contextHolder}
                             <div>
-                                <Link to="/users">
-                                    <Button icon={<ArrowLeftOutlined />} type="link">Usuarios</Button>
-                                </Link>
+                                <Breadcrumb
+                                    style={{ marginTop: 15, marginLeft: 15, marginBottom: 5 }}
+                                    items={[
+                                        {
+                                            href: '/',
+                                            title: <HomeOutlined />,
+                                        },
+                                        {
+                                            href: '/users/',
+                                            title: (
+                                                <>
+                                                    <UserOutlined />
+                                                    <span>Lista de usuarios</span>
+                                                </>
+                                            ),
+                                        },
+                                        {
+                                            title: 'Añadir',
+                                        },
+                                    ]}
+                                />
                                 <h2
                                     style={{
                                         margin: 15,
@@ -145,16 +151,6 @@ const CreateUser = ({ company_id }) => {
                                     }}
                                 >Agregar usuario</h2>
                             </div>
-                            {/*<div
-                                style={{
-                                    marginRight: 15
-                                }}
-                            >
-                                <Link to="/users">
-                                    <Button type="link">Cancelar</Button>
-                                </Link>
-                                <Button type="primary">Guardar</Button>
-                            </div>*/}
                         </div>
                         <div
                             style={{
@@ -178,10 +174,9 @@ const CreateUser = ({ company_id }) => {
                                                 style={{
                                                     marginRight: 15,
                                                     width: '100%',
-                                                    //backgroundColor: 'red'
                                                 }}
                                             >
-                                                <Card>
+                                                <Card className='shadow-card'>
                                                     <h1 className='title-card-form'>Detalles básicos</h1>
                                                     <div className='form-body-card'>
                                                         <Stack direction='row' className='form-field' spacing={4}>
@@ -237,7 +232,7 @@ const CreateUser = ({ company_id }) => {
                                                     </div>
                                                 </Card>
 
-                                                <Card mt={2}>
+                                                <Card mt={2} className='shadow-card'>
                                                     <h1 className='title-card-form'>Clasificación</h1>
                                                     <div className='form-body-card'>
                                                         <Stack className='form-field'>
@@ -299,7 +294,7 @@ const CreateUser = ({ company_id }) => {
                     </Form>
                 )}
             </Formik>
-        </NavBar>
+        </div>
     );
 };
 

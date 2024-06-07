@@ -13,12 +13,12 @@ import {
     ModalOverlay,
     ModalContent,
 } from '@chakra-ui/react'
-import CreateTruckModal from './CreateTruckModal';
+import CreateRoadModal from './CreateRoadModal';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
-import SearchSimple from '../../components/SearchSimple';
 import { Dropdown, Layout, notification } from 'antd';
+import { getCurrencyMoney } from '../../utils/moment-config';
 const { Content } = Layout;
 
 const openNotificationWithIcon = (api, type, description) => {
@@ -28,7 +28,7 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const Truck = ({ company_id }) => {
+const Roads = ({ company_id }) => {
 
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
@@ -66,14 +66,11 @@ const Truck = ({ company_id }) => {
 
     useEffect(() => {
         getTodos();
-    }, [page, plate, upList, company_id]);
+    }, [page, upList, company_id]);
 
     const getTodos = async () => {
         try {
-            let response = plate
-                ? await supabase.rpc('get_trucks_by_company_and_plate', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
-                : await supabase.rpc('get_trucks_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
-            const { data, error } = response;
+            let { data, error } = await supabase.rpc('get_routes_by_company_', { _company_id: company_id, _page: page, _page_size: pageSize });
             if (error) return;
             setData(data.items || []);
             setLength(data?.totalItems || 0)
@@ -90,7 +87,7 @@ const Truck = ({ company_id }) => {
     };
 
     const deleteItem = async ({ id }) => {
-        const { error } = await supabase.from('truck').delete().eq('id', id);
+        const { data, error } = await supabase.from('routes').delete().eq('id', id).select();
         if (error) openNotificationWithIcon(api, 'error')
         else getTodos()
     }
@@ -100,16 +97,14 @@ const Truck = ({ company_id }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
-                <td>{item?.group_name}</td>
-                <th>{item?.plate}</th>
-                <td>{item?.model}</td>
-                <td>{item?.brand} {item?.sub_brand}</td>
-                <td>{item?.no_econ}</td>
+                <td>{item?.name}</td>
+                <th>{item?.description}</th>
+                <td>$ {getCurrencyMoney(item?.cost)}</td>
                 <td>
                     <Dropdown menu={{
                         items: [
                             { label: <a onClick={() => handleUpdateItem({ item })}>Modificar</a>, icon: <EditOutlined /> },
-                            { label: <a onClick={() => deleteItem({ id: item?.truck_id })}>Eliminar</a>, icon: <DeleteOutlined /> }
+                            { label: <a onClick={() => deleteItem({ id: item?.route_id })}>Eliminar</a>, icon: <DeleteOutlined /> }
                         ]
                     }}>
                         <a onClick={(e) => e.preventDefault()} className="table-column-logo"><MoreOutlined /></a>
@@ -124,12 +119,12 @@ const Truck = ({ company_id }) => {
             {contextHolder}
             <Content>
                 <HeaderTitle
-                    title={'Vehículos'}
+                    title={'Rutas'}
                     handle={handleUpdateItem}
                 />
                 <Divider />
                 <div className='content-sub-header-title'>
-                    <SearchSimple setPlate={setPlate} placeholder={'Placa'} />
+                    <h1></h1>
                     <PaginationSimple
                         length={length}
                         page={page}
@@ -146,11 +141,9 @@ const Truck = ({ company_id }) => {
                                 <thead className="cabecera">
                                     <tr>
                                         <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th>GRUPO</th>
-                                        <th>NO PLACA</th>
-                                        <th>MODELO</th>
-                                        <th>MARCA</th>
-                                        <th>NO ECON</th>
+                                        <th>NOMBRE</th>
+                                        <th>DESCRIPCIÓN</th>
+                                        <th>COSTO</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -160,7 +153,7 @@ const Truck = ({ company_id }) => {
                             </table>
                             {!data.length &&
                                 <ListEmpty
-                                    explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
+                                    explication={'Da click sobre el botón AGREGAR para registrar tus rutas'}
                                     newItem={handleUpdateItem}
                                 />}
                         </div>
@@ -169,12 +162,12 @@ const Truck = ({ company_id }) => {
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>
-                        <CreateTruckModal
+                        <CreateRoadModal
                             company_id={company_id}
                             onClose={onClose}
                             item={item}
                             setUpList={setUpList}
-                        />
+                            />
                     </ModalContent>
                 </Modal>
             </Content>
@@ -182,4 +175,4 @@ const Truck = ({ company_id }) => {
     );
 };
 
-export default Truck;
+export default Roads;

@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Button, Flex } from 'antd';
+import { Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 export default function ListEmpty({ explication, newItem }) {
@@ -12,7 +11,7 @@ export default function ListEmpty({ explication, newItem }) {
                     style={{ height: 50 }}
                 />
             </div>
-            <h1 className='text-list-empty'>No hay resultados para mostrar</h1>
+            <strong><h1 className='text-list-empty'>No hay resultados para mostrar</h1></strong>
             <h1 className='text-list-empty'>{explication}</h1>
             <Button onClick={newItem} type="primary" className='btn-add-item' icon={<PlusOutlined />} iconPosition={'start'} size='middle'>Agregar</Button>
         </div>

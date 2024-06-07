@@ -1,30 +1,23 @@
-import React, { useEffect, useState, useRef, useMemo, forwardRef } from 'react'
-import NavBar from '../../components/NavBar';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from "antd";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, useMultiStyleConfig, useTab, Box, Heading, Input, Wrap, WrapItem, Stack, ButtonGroup, Select, useNumberInput } from '@chakra-ui/react';
-
-import { ArrowLeftOutlined, ProfileOutlined, FileTextOutlined, NodeExpandOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Input, Stack, ButtonGroup, Select, useNumberInput } from '@chakra-ui/react';
+import { useLocation } from 'react-router-dom';
+import { ProfileOutlined, FileTextOutlined, } from '@ant-design/icons';
 import '../../assets/styles/truck.css'
 import { Divider } from '@chakra-ui/react'
-import { Card, CardHeader, CardBody, CardFooter, Button as ButtonChakra } from '@chakra-ui/react'
-
+import { Card, Button as ButtonChakra } from '@chakra-ui/react'
+import { HomeOutlined, TruckOutlined, } from '@ant-design/icons';
+import { Breadcrumb } from 'antd';
 import {
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik';
 import { supabase } from '../../utils/supabase';
-import * as Yup from 'yup';
 
 import {
     NumberInput,
     NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
 } from '@chakra-ui/react'
 import { notification } from 'antd';
 
@@ -42,18 +35,24 @@ const messagesNotification = {
 const CreateTruck = ({ company_id }) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const { truckData } = location.state || {};
+    
 
-    const { getInputProps } = useNumberInput({
-        step: 1,
-        defaultValue: 0,
-        min: 1,
-    })
-
-    const input = getInputProps()
+    const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
+    //const input = getInputProps()
     const [tabIndex, setTabIndex] = useState(0)
     const [errors, setErrors] = useState(false)
-
     const [api, contextHolder] = notification.useNotification();
+    const openNotification = (type, description) => openNotificationWithIcon(type, description)
+    const [groups, setGroups] = useState([]);
+    let error = 'Campo requerido';
+    const validate = (value) => !value && error;
+
+    useEffect(() => {
+        getGroups();
+        console.log("🚀 ~ truckData:", truckData)
+    }, []);
 
     const openNotificationWithIcon = (type, description) => {
         api[type]({
@@ -62,37 +61,14 @@ const CreateTruck = ({ company_id }) => {
         });
     };
 
-    const openNotification = (type, description) => openNotificationWithIcon(type, description)
-
-
-    //const [tabIndex, setTabIndex] = useState(0)
-
-    const [groups, setGroups] = useState([]);
-    const [drivers, setDrivers] = useState([]);
-
-    useEffect(() => {
-        getGroups();
-        getDrivers();
-    }, []);
-
     async function getGroups() {
         let { data: groups, error } = await supabase.from('groups').select("*").eq('company_id', company_id)
         if (error) return;
         if (groups.length > 0) setGroups(groups)
     }
-    async function getDrivers() {
-        let { data: users, error } = await supabase.rpc('get_user_drivers_', { _company_id: company_id });
-        if (error) return;
-        if (users.length > 0) setDrivers(users)
-    }
-
-    let error = 'Campo requerido';
-    //function validate(value) (!value) return error;
-    const validate = (value) => !value && error;
-
 
     return (
-        <NavBar index={2}>
+        <div>
             <Formik
                 initialValues={{
                     model: "",
@@ -107,7 +83,7 @@ const CreateTruck = ({ company_id }) => {
                     no_serie: "",
                     group_id: "",
 
-                    class: "",
+                    /*class: "",
                     motor: "",
                     fuel: "",
                     capacity_fuel: "",
@@ -119,7 +95,7 @@ const CreateTruck = ({ company_id }) => {
                     people: "",
                     high: "",
                     broad: "",
-                    long: "",
+                    long: "",*/
                 }}
                 onSubmit={async (values, actions) => {
                     try {
@@ -128,7 +104,7 @@ const CreateTruck = ({ company_id }) => {
                         const newValues = {
                             ...values,
                             group_id: parseFloat(values?.group_id),
-                            weight: parseFloat(values?.weight),
+                            /*weight: parseFloat(values?.weight),
                             liters: parseFloat(values?.liters),
                             tons: parseFloat(values?.tons),
                             high: parseFloat(values?.high),
@@ -137,7 +113,7 @@ const CreateTruck = ({ company_id }) => {
                             capacity_fuel: parseFloat(values?.capacity_fuel),
                             no_axis: parseFloat(values?.no_axis),
                             tires: parseFloat(values?.tires),
-                            people: parseFloat(values?.people),
+                            people: parseFloat(values?.people),*/
                             no_econ: ''
                         }
 
@@ -147,19 +123,16 @@ const CreateTruck = ({ company_id }) => {
                             model: "",
                             plate: "",
                             tarjet: "",
-                            //in_function: "",
-                            //is_active: "",
-                            //status: "",
                             brand: "",
                             sub_brand: "",
                             no_econ: "",
-                            no_serie: "",
+                            //no_serie: "",
                             group_id: "",
 
-                            class: "",
+                            /*class: "",
                             motor: "",
-                            fuel: "",
-                            capacity_fuel: 0,
+                            fuel: "",*/
+                            /*capacity_fuel: 0,
                             weight: 0,
                             no_axis: 0,
                             tires: 0,
@@ -168,7 +141,7 @@ const CreateTruck = ({ company_id }) => {
                             people: 0,
                             high: 0,
                             broad: 0,
-                            long: 0,
+                            long: 0,*/
                         })
                         //actions.resetForm();
                         const { data, error } = await supabase.from('truck')
@@ -183,7 +156,7 @@ const CreateTruck = ({ company_id }) => {
                         if (!error) {
                             actions.resetForm();
                             actions.setValues({
-                                capacity_fuel: 0,
+                                /*capacity_fuel: 0,
                                 weight: 0,
                                 no_axis: 0,
                                 tires: 0,
@@ -192,7 +165,7 @@ const CreateTruck = ({ company_id }) => {
                                 people: 0,
                                 high: 0,
                                 broad: 0,
-                                long: 0,
+                                long: 0,*/
                             })
                             const { error } = await supabase.from('truck').update({ no_econ: `TA-${data[0]?.id}` }).eq('id', data[0]?.id).select()
                             if (!error) openNotification('success', `El vehículo ha sido registrado correctamente.\nLe hemos añadido una clave unica de trabajador TA-${data[0]?.id}`)
@@ -202,10 +175,7 @@ const CreateTruck = ({ company_id }) => {
                             setErrors(true)
                             return 0;
                         }
-
                         setTabIndex(0)
-                        //console.log("🚀 ~ onSubmit= ~ data:", data)
-                        //console.log("🚀 ~ error:", error)
                     } catch (error) {
                         console.log("🚀 ~ onSubmit={ ~ error:", error)
                     } finally {
@@ -213,7 +183,6 @@ const CreateTruck = ({ company_id }) => {
                     }
 
                 }}
-            //validationSchema={validationSchema}
             >
                 {(props) => (
                     <Form>
@@ -228,9 +197,27 @@ const CreateTruck = ({ company_id }) => {
                         >
                             {contextHolder}
                             <div>
-                                <Link to="/truck">
-                                    <Button icon={<ArrowLeftOutlined />} type="link">Vehículos</Button>
-                                </Link>
+                                <Breadcrumb
+                                    style={{ marginTop: 15, marginLeft: 15, marginBottom: 5 }}
+                                    items={[
+                                        {
+                                            href: '/',
+                                            title: <HomeOutlined />,
+                                        },
+                                        {
+                                            href: '/truck/',
+                                            title: (
+                                                <>
+                                                    <TruckOutlined />
+                                                    <span>Lista de véhiculos</span>
+                                                </>
+                                            ),
+                                        },
+                                        {
+                                            title: 'Añadir',
+                                        },
+                                    ]}
+                                />
                                 <h1
                                     style={{
                                         margin: 15,
@@ -241,16 +228,6 @@ const CreateTruck = ({ company_id }) => {
                                     }}
                                 >Agregar vehículo</h1>
                             </div>
-                            {/*<div
-                                style={{
-                                    marginRight: 15
-                                }}
-                            >
-                                <Link to="/truck">
-                                    <Button type="link">Cancelar</Button>
-                                </Link>
-                                <Button type="primary">Guardar</Button>
-                            </div>*/}
                         </div>
                         <div
                             style={{
@@ -260,8 +237,8 @@ const CreateTruck = ({ company_id }) => {
                                 margin: '0 auto'
                             }}
                         >
-                            <Tabs index={tabIndex} onChange={(v) => setTabIndex(v)} size={'sm'} orientation="vertical" className='tabs-father' /*onChange={(index) => setTabIndex(index)}*/ /*variant="unstyled"*/>
-                                <TabList className='tabs-list-tab'>
+                            {/*<Tabs index={tabIndex} onChange={(v) => setTabIndex(v)} size={'sm'} orientation="vertical" className='tabs-father' >
+                                <TabList className='tabs-list-tab shadow-card'>
                                     <Tab>
                                         <ProfileOutlined />
                                         <h1 className='item-list-tab'> Detalles</h1>
@@ -271,9 +248,11 @@ const CreateTruck = ({ company_id }) => {
                                         <h1 className='item-list-tab'> Especificaciones</h1>
                                     </Tab>
                                 </TabList>
-
                                 <TabPanels className='tabs-panel-tab' style={{ marginTop: 4 }}>
-                                    <TabPanel className='tab-panel'>
+                                    <TabPanel className='tab-panel'>*/}
+                            <div className='tabs-father'>
+                                <div className='tabs-panel-tab'>
+                                    <div className='tab-panel'>
                                         <div
                                             style={{
                                                 height: 'calc(100vh - 172px)',
@@ -282,14 +261,13 @@ const CreateTruck = ({ company_id }) => {
                                         >
                                             <div
                                                 style={{
-                                                    marginRight: 15,
+                                                    //marginRight: 15,
                                                     width: '100%',
                                                     //backgroundColor: 'red'
                                                 }}
                                             >
-
-                                                <Card>
-                                                    <h1 className='title-card-form'>Identification</h1>
+                                                <Card className='shadow-card'>
+                                                    <h1 className='title-card-form'>Detalles básicos</h1>
                                                     <div className='form-body-card'>
                                                         <Stack className='form-field'>
                                                             <Field name='model' validate={validate}>
@@ -318,20 +296,18 @@ const CreateTruck = ({ company_id }) => {
                                                                 )}
                                                             </Field>
                                                         </Stack>
-
-                                                        <Stack className='form-field'>
-                                                            <Field name='no_serie'>
-                                                                {({ field, form }) => (
-                                                                    <FormControl isInvalid={form.errors.no_serie && form.touched.no_serie}>
-                                                                        <FormLabel>
-                                                                            <h1 className='form-label'>No. serie</h1>
-                                                                        </FormLabel>
-                                                                        <Input {...field} />
-                                                                    </FormControl>
-                                                                )}
-                                                            </Field>
-                                                        </Stack>
-
+                                                        {/*<Stack className='form-field'>
+                                                        <Field name='no_serie'>
+                                                            {({ field, form }) => (
+                                                                <FormControl isInvalid={form.errors.no_serie && form.touched.no_serie}>
+                                                                    <FormLabel>
+                                                                        <h1 className='form-label'>No. serie</h1>
+                                                                    </FormLabel>
+                                                                    <Input {...field} />
+                                                                </FormControl>
+                                                            )}
+                                                        </Field>
+                                                        </Stack>*/}
                                                         <Stack direction='row' className='form-field' spacing={2}>
                                                             <Field name='brand' validate={validate}>
                                                                 {({ field, form }) => (
@@ -344,19 +320,18 @@ const CreateTruck = ({ company_id }) => {
                                                                     </FormControl>
                                                                 )}
                                                             </Field>
-                                                            <Field name='sub_brand' validate={validate}>
-                                                                {({ field, form }) => (
-                                                                    <FormControl isInvalid={form.errors.sub_brand && form.touched.sub_brand}>
-                                                                        <FormLabel>
-                                                                            <h1 className='form-label requeried'>Sub-Marca</h1>
-                                                                        </FormLabel>
-                                                                        <Input {...field} />
-                                                                        {form.errors.sub_brand && <h1 className='form-error'>{form.errors.sub_brand}</h1>}
-                                                                    </FormControl>
-                                                                )}
-                                                            </Field>
+                                                            {/*<Field name='sub_brand' validate={validate}>
+                                                            {({ field, form }) => (
+                                                                <FormControl isInvalid={form.errors.sub_brand && form.touched.sub_brand}>
+                                                                    <FormLabel>
+                                                                        <h1 className='form-label requeried'>Sub-Marca</h1>
+                                                                    </FormLabel>
+                                                                    <Input {...field} />
+                                                                    {form.errors.sub_brand && <h1 className='form-error'>{form.errors.sub_brand}</h1>}
+                                                                </FormControl>
+                                                            )}
+                                                        </Field>*/}
                                                         </Stack>
-
                                                         <Stack className='form-field'>
                                                             <FormControl isInvalid={props.errors.group_id && props.touched.group_id}>
                                                                 <FormLabel>
@@ -397,23 +372,50 @@ const CreateTruck = ({ company_id }) => {
                                                 <Divider mt={6} mb={6} />
                                                 <ButtonGroup pb={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <ButtonChakra onClick={() => navigate('/truck')} variant="link" style={{ color: '#1677ff', fontWeight: '300' }}>Cancelar</ButtonChakra>
-                                                    <ButtonChakra
-                                                        //mt={4}
-                                                        //colorScheme='blue'
+                                                    {/*<ButtonChakra
                                                         style={{ backgroundColor: '#1677ff', fontWeight: '300', color: 'white' }}
                                                         isLoading={props.isSubmitting}
-                                                        //type='submit'
                                                         isDisabled={!props?.values?.model || !props?.values?.plate || !props?.values?.brand || !props?.values?.sub_brand || !props?.values?.group_id}
-                                                        onClick={() => setTabIndex(1)}
                                                     >
                                                         Guardar
-                                                    </ButtonChakra>
+                                                            </ButtonChakra>*/}
+                                                    <div style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
+                                                        <ButtonChakra
+                                                            //mt={4}
+                                                            //colorScheme='blue'
+                                                            variant='outline'
+                                                            style={{ fontWeight: '300', color: '#1677ff' }}
+                                                            isLoading={props.isSubmitting}
+                                                            //type='submit'
+                                                            onClick={() => props.submitForm()}
+                                                        >
+                                                            Guardar & Añadir otro
+                                                        </ButtonChakra>
+                                                        <ButtonChakra
+                                                            //mt={4}
+                                                            //colorScheme='blue'
+                                                            style={{ backgroundColor: '#1677ff', fontWeight: '300', color: 'white' }}
+                                                            isLoading={props.isSubmitting}
+                                                            isDisabled={!props?.values?.model || !props?.values?.plate || !props?.values?.brand || !props?.values?.sub_brand || !props?.values?.group_id}
+                                                            onClick={() => {
+                                                                props.submitForm();
+                                                                if (errors) {
+                                                                    setTimeout(() => {
+                                                                        navigate('/truck/');
+                                                                    }, 2500)
+                                                                }
+                                                            }}
+                                                        >
+                                                            Guardar
+                                                        </ButtonChakra>
+                                                    </div>
                                                 </ButtonGroup>
-
                                             </div>
-
                                         </div>
-                                    </TabPanel>
+                                    </div>
+                                </div>
+                            </div>
+                            {/*</TabPanel>
 
                                     <TabPanel className='tab-panel'>
                                         <div
@@ -429,7 +431,7 @@ const CreateTruck = ({ company_id }) => {
                                                     //backgroundColor: 'red'
                                                 }}
                                             >
-                                                <Card>
+                                                <Card className='shadow-card'>
                                                     <h1 className='title-card-form'>Motor</h1>
                                                     <div className='form-body-card'>
                                                         <Stack direction='row' className='form-field' spacing={2}>
@@ -457,8 +459,7 @@ const CreateTruck = ({ company_id }) => {
                                                         </Stack>
                                                     </div>
                                                 </Card>
-
-                                                <Card mt={2}>
+                                                <Card mt={2} className='shadow-card'>
                                                     <h1 className='title-card-form'>Dimensiones y capacidad</h1>
                                                     <div className='form-body-card'>
                                                         <Stack direction='row' className='form-field' spacing={2}>
@@ -480,7 +481,6 @@ const CreateTruck = ({ company_id }) => {
                                                                         <FormLabel>
                                                                             <h1 className='form-label'>Ancho</h1>
                                                                         </FormLabel>
-                                                                        {/*<Input {...input} />*/}
                                                                         <NumberInput value={field.value}>
                                                                             <NumberInputField {...field} />
                                                                         </NumberInput>
@@ -579,7 +579,7 @@ const CreateTruck = ({ company_id }) => {
                                                         </Stack>
                                                     </div>
                                                 </Card>
-                                                <Card mt={2}>
+                                                <Card mt={2} className='shadow-card'>
                                                     <h1 className='title-card-form'>Combustible</h1>
                                                     <div className='form-body-card'>
                                                         <Stack direction='row' className='form-field' spacing={2}>
@@ -608,7 +608,6 @@ const CreateTruck = ({ company_id }) => {
                                                         </Stack>
                                                     </div>
                                                 </Card>
-
                                                 <Divider mt={6} mb={6} />
                                                 <ButtonGroup pb={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <ButtonChakra onClick={() => navigate('/truck')} variant="link" style={{ color: '#1677ff', fontWeight: '300' }}>Cancelar</ButtonChakra>
@@ -617,7 +616,7 @@ const CreateTruck = ({ company_id }) => {
                                                             //mt={4}
                                                             //colorScheme='blue'
                                                             variant='outline'
-                                                            style={{ /*backgroundColor: '#1677ff',*/ fontWeight: '300', color: '#1677ff' }}
+                                                            style={{ fontWeight: '300', color: '#1677ff' }}
                                                             isLoading={props.isSubmitting}
                                                             //type='submit'
                                                             onClick={() => props.submitForm()}
@@ -644,19 +643,16 @@ const CreateTruck = ({ company_id }) => {
                                                         </ButtonChakra>
                                                     </div>
                                                 </ButtonGroup>
-
                                             </div>
-
                                         </div>
-                                    </TabPanel>
+                                                        </TabPanel>
                                 </TabPanels>
-                            </Tabs>
+                            </Tabs>*/}
                         </div>
-
                     </Form>
                 )}
             </Formik>
-        </NavBar>
+        </div>
     );
 };
 

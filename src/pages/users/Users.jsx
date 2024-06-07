@@ -13,7 +13,7 @@ import {
     ModalOverlay,
     ModalContent,
 } from '@chakra-ui/react'
-import CreateTruckModal from './CreateTruckModal';
+import CreateUserModal from './CreateUserModal';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
@@ -28,7 +28,7 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const Truck = ({ company_id }) => {
+const Users = ({ company_id }) => {
 
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
@@ -71,8 +71,8 @@ const Truck = ({ company_id }) => {
     const getTodos = async () => {
         try {
             let response = plate
-                ? await supabase.rpc('get_trucks_by_company_and_plate', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
-                : await supabase.rpc('get_trucks_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
+                ? await supabase.rpc('get_users_by_company_and_name', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
+                : await supabase.rpc('get_users_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
             const { data, error } = response;
             if (error) return;
             setData(data.items || []);
@@ -90,7 +90,7 @@ const Truck = ({ company_id }) => {
     };
 
     const deleteItem = async ({ id }) => {
-        const { error } = await supabase.from('truck').delete().eq('id', id);
+        const { error } = await supabase.from('user').delete().eq('id', id);
         if (error) openNotificationWithIcon(api, 'error')
         else getTodos()
     }
@@ -100,16 +100,15 @@ const Truck = ({ company_id }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
-                <td>{item?.group_name}</td>
-                <th>{item?.plate}</th>
-                <td>{item?.model}</td>
-                <td>{item?.brand} {item?.sub_brand}</td>
-                <td>{item?.no_econ}</td>
+                <th className='th-center'>{item?.no_econ}</th>
+                <td>{item?.name} {item?.last_name}</td>
+                <th>{item?.email}</th>
+                <th>{item?.phone_number}</th>
                 <td>
                     <Dropdown menu={{
                         items: [
                             { label: <a onClick={() => handleUpdateItem({ item })}>Modificar</a>, icon: <EditOutlined /> },
-                            { label: <a onClick={() => deleteItem({ id: item?.truck_id })}>Eliminar</a>, icon: <DeleteOutlined /> }
+                            { label: <a onClick={() => deleteItem({ id: item?.id })}>Eliminar</a>, icon: <DeleteOutlined /> }
                         ]
                     }}>
                         <a onClick={(e) => e.preventDefault()} className="table-column-logo"><MoreOutlined /></a>
@@ -124,12 +123,12 @@ const Truck = ({ company_id }) => {
             {contextHolder}
             <Content>
                 <HeaderTitle
-                    title={'Vehículos'}
+                    title={'Usuarios'}
                     handle={handleUpdateItem}
                 />
                 <Divider />
                 <div className='content-sub-header-title'>
-                    <SearchSimple setPlate={setPlate} placeholder={'Placa'} />
+                    <SearchSimple setPlate={setPlate} placeholder={'Nombre'} />
                     <PaginationSimple
                         length={length}
                         page={page}
@@ -146,11 +145,10 @@ const Truck = ({ company_id }) => {
                                 <thead className="cabecera">
                                     <tr>
                                         <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th>GRUPO</th>
-                                        <th>NO PLACA</th>
-                                        <th>MODELO</th>
-                                        <th>MARCA</th>
-                                        <th>NO ECON</th>
+                                        <th className='th-center'>NO EMPLEADO</th>
+                                        <th>NOMBRE</th>
+                                        <th>CORREO</th>
+                                        <th>NO TELÉFONO</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -169,12 +167,12 @@ const Truck = ({ company_id }) => {
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>
-                        <CreateTruckModal
+                        <CreateUserModal
                             company_id={company_id}
                             onClose={onClose}
                             item={item}
                             setUpList={setUpList}
-                        />
+                            />
                     </ModalContent>
                 </Modal>
             </Content>
@@ -182,4 +180,4 @@ const Truck = ({ company_id }) => {
     );
 };
 
-export default Truck;
+export default Users;

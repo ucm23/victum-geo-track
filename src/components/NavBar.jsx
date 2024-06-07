@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { FileDoneOutlined, HomeOutlined, UserOutlined, ApartmentOutlined, SettingFilled, LoginOutlined, UserAddOutlined, MenuOutlined, TruckOutlined, CalendarOutlined, } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import React, { useEffect, useState, useMemo, useContext, useRef } from 'react';
+import { HomeOutlined, UserOutlined, ApartmentOutlined, SettingFilled, LoginOutlined, MenuOutlined, TruckOutlined, CalendarOutlined, } from '@ant-design/icons';
+import { Layout, Menu, theme } from 'antd';
 import { Divider } from '@chakra-ui/react'
-
+import Context from '../context/Context';
 import { Link } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
@@ -50,21 +49,15 @@ const menu_ = [
     {
         label: 'Salir',
         icon: React.createElement(LoginOutlined),
-        route: '/calendar'
     }
 ]
 
 
-const NavBar = ({ index, key_, children }) => {
+const NavBar = ({ index, children }) => {
 
     const { token: { colorBgContainer } } = theme.useToken();
-
+    const { signOut } = useContext(Context);
     const [collapsed, setCollapsed] = useState(true);
-
-    useEffect(() => {
-        //console.log("🚀 ~ NavBar ~ index, key:", index, key_)
-        console.log("🚀 ~ s defaultOpenKeys:", typeof index, index)
-    }, []);
 
     return (
         <Layout
@@ -117,7 +110,7 @@ const NavBar = ({ index, key_, children }) => {
                         <Menu
                             //mode='vertical'
                             mode="inline"
-                            defaultSelectedKeys={[`${index}`]}
+                            //defaultSelectedKeys={[`${index}`]}
                             //defaultOpenKeys={[`${key_}`]}
                             style={{
                                 height: '100%',
@@ -147,20 +140,17 @@ const NavBar = ({ index, key_, children }) => {
 
                         <Menu
                             mode="inline"
-                            //defaultSelectedKeys={[`${index}`]}
-                            //defaultOpenKeys={['sub1']}
                             style={{
                                 height: '100%',
                                 borderRight: 0,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'flex-end',
-
                             }}
                         >
                             {menu_.map((item, index) => (
-                                <Menu.Item key={`item-${index}`}>
-                                    <Link to={item.route}>
+                                <Menu.Item key={`item-${index}`} onClick={() => index ? signOut() : {}}>
+                                    <Link to={!index && item.route}>
                                         <span>{item.icon} &nbsp; <span>{item.label}</span></span>
                                     </Link>
                                 </Menu.Item>
@@ -172,7 +162,6 @@ const NavBar = ({ index, key_, children }) => {
                 <Layout
                 //className='layout'
                 >
-
                     <Content>
                         {children}
                     </Content>
