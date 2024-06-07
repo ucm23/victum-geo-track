@@ -14,10 +14,11 @@ import {
     Input,
     FormControl,
     FormLabel,
+    Badge
 } from '@chakra-ui/react';
 import { supabase } from '../../utils/supabase';
 import { getCurrencyMoney } from '../../utils/moment-config';
-import { Breadcrumb, Badge, Descriptions, notification, Button, Tooltip, Checkbox, Timeline, Alert } from 'antd';
+import { Breadcrumb, Descriptions, notification, Button, Tooltip, Checkbox, Timeline, Alert } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
@@ -106,7 +107,9 @@ const CreateEvent = ({ company_id }) => {
                         </div>
                         <div className='flex-row-center-vertical-between-wrap'>
                             <h1>Fecha de limite de pago</h1>
-                            <h1>{item?.days ? moment(item?.days).format('DD-MM-YYYY') : 'No definido'}</h1>
+                            {!item?.days ? <Badge colorScheme='red'>No definido</Badge> :
+                                <Badge colorScheme='purple'>{moment(item?.days).format('DD-MM-YYYY')}</Badge>
+                            }
                         </div>
                     </>
                 ),
@@ -341,7 +344,7 @@ const CreateEvent = ({ company_id }) => {
                                             <div className='form-body-card'>
                                                 <Stack mb={4} />
                                                 <h1 className='title-card-form-no-space' >Facturas</h1>
-                                                { item?.status < 3 &&
+                                                {item?.status < 3 &&
                                                     <Alert message="Aún no es posible aprobar las facturas, envie la orden de trabajo para un seguimiento correcto." type="warning" showIcon />
                                                 }
                                                 <Stack mb={1} />
@@ -391,8 +394,8 @@ const CreateEvent = ({ company_id }) => {
                                                         onSubmit={async (values, actions) => {
                                                             try {
                                                                 setSubmitting(true)
-                                                                const { data, error } = await supabase.from('travel').update({ 
-                                                                    status: 4, 
+                                                                const { data, error } = await supabase.from('travel').update({
+                                                                    status: 4,
                                                                     days: `${values?.date_limit_pay}T00:00:00`,
                                                                     files: files
                                                                 }).eq('id', item?.id).select()

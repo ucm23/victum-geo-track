@@ -21,9 +21,11 @@ import {
     NumberIncrementStepper,
     NumberDecrementStepper,
     NumberInput, NumberInputField,
-    Box, Icon, Text
-} from '@chakra-ui/react';
-import { Badge } from '@chakra-ui/react'
+    Box, 
+    Icon, 
+    Text,
+    Badge 
+} from '@chakra-ui/react'
 import { Upload } from "antd";
 import '../../assets/styles/truck.css'
 import { Radio, RadioGroup } from '@chakra-ui/react'

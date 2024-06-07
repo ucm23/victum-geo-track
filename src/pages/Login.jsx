@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useContext, useRef } from 'react';
 import { useParams, Link, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { Button, notification, Space, Spin, Flex } from 'antd';
 import { connect, useDispatch, useStore, } from "react-redux";
-//import { useHistory } from "react-router-dom";
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import {
     useBreakpointValue,
 } from '@chakra-ui/react';
@@ -14,6 +14,9 @@ function Login({ openSession }) {
     const { signIn } = useContext(Context);
     const mobile = useBreakpointValue({ base: true, md: false });
     const form = useRef();
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
     const [data, setData] = useState({
         email: '',
         password: ''
@@ -56,8 +59,6 @@ function Login({ openSession }) {
             signIn()
             navigate(`/home`);
         }, 2000);
-
-
     };
 
     return (
@@ -111,7 +112,7 @@ function Login({ openSession }) {
                                     </label>
                                 </div>
                                 <div className="mt-2">
-                                    <input
+                                    {/*<input
                                         id="password"
                                         name="password"
                                         //type="password"
@@ -120,7 +121,29 @@ function Login({ openSession }) {
                                         value={data.password ?? ''}
                                         onChange={handleChange}
                                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
+                    />*/}
+                                    <div className="relative">
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            autoComplete="current-password"
+                                            required
+                                            value={data.password}
+                                            onChange={handleChange}
+                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <div
+                                            onClick={togglePasswordVisibility}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                        >
+                                            {showPassword ? (
+                                                <EyeInvisibleOutlined className="text-gray-500 hover:text-gray-700" />
+                                            ) : (
+                                                <EyeOutlined className="text-gray-500 hover:text-gray-700" />
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div>
