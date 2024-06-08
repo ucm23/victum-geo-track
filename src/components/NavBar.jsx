@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useContext, useRef } from 'react';
-import { HomeOutlined, UserOutlined, ApartmentOutlined, SettingFilled, LoginOutlined, MenuOutlined, TruckOutlined, CalendarOutlined, } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined, ApartmentOutlined, SettingFilled, LoginOutlined, MenuOutlined, TruckOutlined, CalendarOutlined, MailOutlined } from '@ant-design/icons';
 import { Layout, Menu, theme } from 'antd';
 import { Divider } from '@chakra-ui/react'
 import Context from '../context/Context';
@@ -16,24 +16,30 @@ const menu = [
     },
     {
         key: '2',
+        label: 'Buzón CFDi',
+        icon: React.createElement(MailOutlined),
+        route: '/buzon'
+    },
+    {
+        key: '3',
         label: 'Calendario',
         icon: React.createElement(CalendarOutlined),
         route: '/calendar'
     },
     {
-        key: '3',
+        key: '4',
         label: 'Vehículos',
         icon: React.createElement(TruckOutlined),
         route: '/truck',
     },
     {
-        key: '4',
+        key: '5',
         label: 'Usuarios',
         icon: React.createElement(UserOutlined),
         route: '/users'
     },
     {
-        key: '5',
+        key: '6',
         label: 'Rutas',
         icon: React.createElement(ApartmentOutlined),
         route: '/routes'

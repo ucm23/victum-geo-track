@@ -13,6 +13,7 @@ import {
     ModalOverlay,
     ModalContent,
 } from '@chakra-ui/react'
+import { useSelector } from 'react-redux';
 import CreateRoadModal from './CreateRoadModal';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
@@ -28,7 +29,10 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const Roads = ({ company_id }) => {
+const Roads = ({ }) => {
+
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);

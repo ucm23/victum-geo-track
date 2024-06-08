@@ -14,6 +14,7 @@ import {
 import { Field, Form, Formik } from 'formik';
 import { supabase } from '../../utils/supabase';
 import { notification } from 'antd';
+import { useSelector } from 'react-redux';
 
 const messagesNotification = {
     success: {
@@ -25,7 +26,10 @@ const messagesNotification = {
     }
 }
 
-const CreateUser = ({ company_id }) => {
+const CreateUser = ({ }) => {
+
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();

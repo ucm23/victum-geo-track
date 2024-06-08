@@ -6,23 +6,19 @@ import store from './redux/store';
 import Index from "./pages/Index"
 import Login from "./pages/Login"
 import Truck from "./pages/truck/Truck"
-import CreateTruck from "./pages/truck/CreateTruck"
-
 import Users from "./pages/users/Users"
-import CreateUser from "./pages/users/CreateUser"
-import CreateRoad from "./pages/route/CreateRoad"
-
+import BuzonCFDi from "./pages/buzon/BuzonCFDi"
 import './App.css'
 import Calendars from "./pages/calendar/Calendars";
-import OrderWork from "./pages/calendar/OrderWork";
 import CreateEvent from "./pages/calendar/CreateEvent";
 import NavBar from './components/NavBar';
 import Roads from './pages/route/Roads';
 
 function App() {
-    const company_id = 1;
+
     const initialTokenState = localStorage.getItem('userToken') === 'true';
     const [userToken, setUserToken] = useState(initialTokenState);
+
     const authContext = useMemo(() => {
         return {
             signIn: () => {
@@ -39,10 +35,11 @@ function App() {
             },
         };
     }, []);
+
     useEffect(() => {
-        // Este efecto se ejecuta al montar el componente y cada vez que cambie userToken
         localStorage.setItem('userToken', userToken.toString());
     }, [userToken]);
+
     return (
         <Context.Provider value={authContext}>
             <Provider store={store}>
@@ -53,47 +50,41 @@ function App() {
                             element={<Login />}
                         />
                     </Routes> :
-                    <NavBar >
+                    <NavBar>
                         <Routes>
                             <Route
-                                exact
-                                index
+                                exact 
+                                index 
                                 path="/home"
-                                element={<Index company_id={company_id} />}
+                                element={<Index />}
+                            />
+                            <Route
+                                path="*"
+                                element={<Index />}
+                            />
+                            <Route
+                                path="/buzon"
+                                element={<BuzonCFDi />}
                             />
                             <Route
                                 path="/calendar"
-                                element={<Calendars company_id={company_id} />}
+                                element={<Calendars />}
                             />
                             <Route
                                 path="/calendar/details"
-                                element={<CreateEvent company_id={company_id} />}
+                                element={<CreateEvent />}
                             />
                             <Route
                                 path="/truck"
-                                element={<Truck company_id={company_id} />}
+                                element={<Truck />}
                             />
-                            <Route
-                                path="/truck/create"
-                                element={<CreateTruck company_id={company_id} />}
-                            />
-
                             <Route
                                 path="/users"
-                                element={<Users company_id={company_id} />}
+                                element={<Users />}
                             />
-                            <Route
-                                path="/users/create"
-                                element={<CreateUser company_id={company_id} />}
-                            />
-
                             <Route
                                 path="/routes"
-                                element={<Roads company_id={company_id} />}
-                            />
-                            <Route
-                                path="/routes/create"
-                                element={<CreateRoad company_id={company_id} />}
+                                element={<Roads />}
                             />
                         </Routes>
                     </NavBar>

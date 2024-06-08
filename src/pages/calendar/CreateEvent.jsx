@@ -23,6 +23,7 @@ import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
 import { Field, Form, Formik } from 'formik';
+import { useSelector } from 'react-redux';
 
 const messagesNotification = {
     success: {
@@ -34,7 +35,10 @@ const messagesNotification = {
     }
 }
 
-const CreateEvent = ({ company_id }) => {
+const CreateEvent = ({ }) => {
+    
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
     const navigate = useNavigate();
@@ -239,7 +243,7 @@ const CreateEvent = ({ company_id }) => {
         const phoneNumber = drivers[2].children;
         let id = item?.id * 12345;
         console.log("🚀 ~ sendMessage ~ id:", id)
-        const message = `Hola, te envio una orden de trabajo con el código ${item?.title}\nCuadno dirigere al link https://help-victum-repse.vercel.app/order/work/progress/${id}`;
+        const message = `Hola, te envio una orden de trabajo con el código ${item?.title}\nDirijase al link https://help-victum-repse.vercel.app/order/work/progress/${id}`;
         const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(whatsappURL, '_blank');
     };

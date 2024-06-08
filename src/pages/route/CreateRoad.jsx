@@ -21,6 +21,7 @@ import {
     NumberDecrementStepper,
 } from '@chakra-ui/react'
 import { notification } from 'antd';
+import { useSelector } from 'react-redux';
 /*import GoogleMapReact from 'google-map-react';
 import { Box, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -63,7 +64,10 @@ const messagesNotification = {
 
 //const apiKey = "AIzaSyD9gA5UfZA21TZKOVtenIaZeef-ZqMlFhc";
 
-const CreateRoad = ({ company_id }) => {
+const CreateRoad = ({ }) => {
+ 
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     //const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
     const navigate = useNavigate();

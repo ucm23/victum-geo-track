@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik';
 import { supabase } from '../../utils/supabase';
-
+import { useSelector } from 'react-redux';
 import {
     NumberInput,
     NumberInputField,
@@ -32,7 +32,10 @@ const messagesNotification = {
 }
 
 
-const CreateTruck = ({ company_id }) => {
+const CreateTruck = ({ }) => {
+
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     const navigate = useNavigate();
     const location = useLocation();

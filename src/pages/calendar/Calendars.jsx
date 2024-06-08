@@ -14,18 +14,20 @@ import {
     ModalContent,
 } from '@chakra-ui/react'
 import CreateEventModal from './CreateEventModal';
+import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 const { Content } = Layout;
 
-const Calendars = ({ company_id }) => {
+const Calendars = ({ }) => {
 
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
     const localizer = momentLocalizer(moment);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [upList, setUpList] = useState(false);
     const [item, setItem] = useState(null);
-
     const [status, setStatus] = useState([]);
 
     useEffect(() => {

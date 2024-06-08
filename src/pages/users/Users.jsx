@@ -19,6 +19,7 @@ import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
 import SearchSimple from '../../components/SearchSimple';
 import { Dropdown, Layout, notification } from 'antd';
+import { useSelector } from 'react-redux';
 const { Content } = Layout;
 
 const openNotificationWithIcon = (api, type, description) => {
@@ -28,7 +29,10 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const Users = ({ company_id }) => {
+const Users = ({ }) => {
+
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
 
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);

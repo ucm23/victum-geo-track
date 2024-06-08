@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import {
     MoreOutlined,
     EditOutlined,
-    DeleteOutlined
+    EyeOutlined,
+    FileProtectOutlined,
+    FilePdfOutlined
 } from '@ant-design/icons';
 import '../../assets/styles/truck.css';
 import { pageSize, supabase, messagesNotificationTruck } from '../../utils/supabase';
@@ -13,13 +15,17 @@ import {
     ModalOverlay,
     ModalContent,
 } from '@chakra-ui/react'
-import CreateTruckModal from './CreateTruckModal';
+import CreateUserModal from './DetailsBuzon';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
 import SearchSimple from '../../components/SearchSimple';
 import { Dropdown, Layout, notification } from 'antd';
+import { Descriptions } from 'antd';
+import moment from 'moment/moment';
+import { getCurrencyMoney } from '../../utils/moment-config';
 import { useSelector } from 'react-redux';
+import DetailsBuzon from './DetailsBuzon';
 const { Content } = Layout;
 
 const openNotificationWithIcon = (api, type, description) => {
@@ -29,7 +35,7 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const Truck = ({ }) => {
+const BuzonCFDi = ({ }) => {
 
     const information_user = useSelector(state => state.login.information_user);
     const { company_id } = information_user;
@@ -75,8 +81,8 @@ const Truck = ({ }) => {
     const getTodos = async () => {
         try {
             let response = plate
-                ? await supabase.rpc('get_trucks_by_company_and_plate', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
-                : await supabase.rpc('get_trucks_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
+                ? await supabase.rpc('get_invoices_by_company_and_folio', { _company_id: company_id, _folio: plate, _page: page, _page_size: pageSize })
+                : await supabase.rpc('get_invoices_by_company', { _company_id: company_id, _page: page, _page_size: pageSize });
             const { data, error } = response;
             if (error) return;
             setData(data.items || []);
@@ -93,27 +99,44 @@ const Truck = ({ }) => {
         onOpen()
     };
 
-    const deleteItem = async ({ id }) => {
-        const { error } = await supabase.from('truck').delete().eq('id', id);
-        if (error) openNotificationWithIcon(api, 'error')
-        else getTodos()
-    }
+    const downloadFile = async ({ id, type }) => {
+        let { data: travel, error } = await supabase.from('travel').select("files").eq('id', id)
+        console.log("🚀 ~ downloadFile ~ error:", error)
+        console.log("🚀 ~ downloadFile ~ travel:", travel[0]?.files)
 
+        let foundItem = null;
+        if (type == 'xml') foundItem = travel[0]?.files.find(item => item.mime.includes('xml'));
+        else foundItem = travel[0]?.files.find(item => item.mime.includes('pdf'));
+        
+        if (foundItem) {
+            const link = document.createElement('a');
+            link.href = `http://api-metrix.victum-re.online/geo_truck/travel_files/${foundItem?.id}/download`;
+            link.setAttribute('download', '');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
 
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
-                <td>{item?.group_name}</td>
-                <th>{item?.plate}</th>
-                <td>{item?.model}</td>
-                <td>{item?.brand} {item?.sub_brand}</td>
-                <td>{item?.no_econ}</td>
-                <td>
+                <th className='th-center'>{item?.folio}</th>
+                <td className='th-center'>{item?.receptorNombre}</td>
+                <td className='th-center'>{item?.emisorNombre}</td>
+                <td className='th-center'>{item?.tipoPago}</td>
+                <td className='th-center'>{item?.tipoMoneda}</td>
+                <td className='th-center'>$ {getCurrencyMoney(item?.total)}</td>
+                <td className='th-center'>{moment(item?.fechaEmision).format('DD-MM-YYYY HH:MM a')}</td>
+                <td className='th-center'>{item?.status}</td>
+                <td className='th-center'>
                     <Dropdown menu={{
                         items: [
-                            { label: <a onClick={() => handleUpdateItem({ item })}>Modificar</a>, icon: <EditOutlined /> },
-                            { label: <a onClick={() => deleteItem({ id: item?.truck_id })}>Eliminar</a>, icon: <DeleteOutlined /> }
+                            { label: <a onClick={() => handleUpdateItem({ item })}>Ver detalles</a>, icon: <EyeOutlined /> },
+                            { label: <a onClick={() => handleUpdateItem({ item })}>Cambiar estado</a>, icon: <EditOutlined /> },
+                            { label: <a onClick={() => downloadFile({ id: item?.order_id, type: 'xml' })}>Descargar XML</a>, icon: <FileProtectOutlined /> },
+                            { label: <a onClick={() => downloadFile({ id: item?.order_id, type: 'pdf' })}>Descargar PDF</a>, icon: <FilePdfOutlined /> }
                         ]
                     }}>
                         <a onClick={(e) => e.preventDefault()} className="table-column-logo"><MoreOutlined /></a>
@@ -128,12 +151,11 @@ const Truck = ({ }) => {
             {contextHolder}
             <Content>
                 <HeaderTitle
-                    title={'Vehículos'}
-                    handle={handleUpdateItem}
+                    title={'Facturas'}
                 />
                 <Divider />
                 <div className='content-sub-header-title'>
-                    <SearchSimple setPlate={setPlate} placeholder={'Placa'} />
+                    <SearchSimple setPlate={setPlate} placeholder={'Folio'} />
                     <PaginationSimple
                         length={length}
                         page={page}
@@ -150,11 +172,14 @@ const Truck = ({ }) => {
                                 <thead className="cabecera">
                                     <tr>
                                         <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th>GRUPO</th>
-                                        <th>NO PLACA</th>
-                                        <th>MODELO</th>
-                                        <th>MARCA</th>
-                                        <th>NO ECON</th>
+                                        <th className='th-center'>FOLIO</th>
+                                        <th className='th-center'>RECEPTOR</th>
+                                        <th className='th-center'>EMISOR</th>
+                                        <th className='th-center'>Pago</th>
+                                        <th className='th-center'>Moneda</th>
+                                        <th className='th-center'>Total</th>
+                                        <th className='th-center'>Fecha de emisión</th>
+                                        <th className='th-center'>Estado</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -173,7 +198,7 @@ const Truck = ({ }) => {
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>
-                        <CreateTruckModal
+                        <DetailsBuzon
                             company_id={company_id}
                             onClose={onClose}
                             item={item}
@@ -186,4 +211,4 @@ const Truck = ({ }) => {
     );
 };
 
-export default Truck;
+export default BuzonCFDi;
