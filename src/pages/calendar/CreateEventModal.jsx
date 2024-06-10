@@ -31,6 +31,7 @@ import {
 } from '@chakra-ui/react'
 import '../../assets/styles/truck.css'
 import { parseString } from 'xml2js';
+import { XMLParser } from 'fast-xml-parser';
 
 const openNotificationWithIcon = (api, type, description) => {
     api[type]({
@@ -79,7 +80,6 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
     const [orderData, setOrderData] = useState(null);
 
     const handleUploadChange = (file, index) => {
-
         const updatedFileList = fileList.map((item, idx) => {
             if (idx === index) {
                 return { ...item, file };
@@ -239,7 +239,44 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                     }
                     if (!fileContent) return 0
                     else {
-                        parseString(fileContent, { explicitArray: false }, (err, result) => {
+                        const parser = new XMLParser({
+                            ignoreAttributes: false,
+                            attributeNamePrefix: "",
+                        });
+                        try {
+                            const result = parser.parse(fileContent);
+                            const comprobante = result['cfdi:Comprobante'];
+                            const emisor = comprobante['cfdi:Emisor'];
+                            const receptor = comprobante['cfdi:Receptor'];
+                            const complemento = comprobante['cfdi:Complemento']['tfd:TimbreFiscalDigital'];
+
+                            const extractedData = {
+                                emisorNombre: emisor.Nombre,
+                                emisorRfc: emisor.Rfc,
+                                receptorNombre: receptor.Nombre,
+                                receptorRfc: receptor.Rfc,
+                                folio: comprobante.Folio,
+                                uuid: complemento.UUID,
+                                subtotal: parseFloat(comprobante.SubTotal) || 0,
+                                total: parseFloat(comprobante.Total) || 0,
+                                formaPago: comprobante.FormaPago,
+                                tipoMoneda: comprobante.Moneda,
+                                tipoPago: comprobante.MetodoPago,
+                                condicionesPago: comprobante.CondicionesDePago,
+                                fechaEmision: comprobante.Fecha,
+                                fechaTimbrado: complemento.FechaTimbrado,
+                                company_id,
+                                status: 'Pendiente'
+                            };
+
+                            setInvoiceData(extractedData);
+                            console.log("🚀 ~ parseXMLFast ~ extractedData:", extractedData);
+                        } catch (err) {
+                            console.error('Error parsing XML:', err);
+                            alert(`Verifique el formato XML. \nError: ${err}`);
+                        }
+
+                        /*parseString(fileContent, { explicitArray: false }, (err, result) => {
                             if (err) {
                                 console.error('Error parsing XML:', err);
                                 alert(`Verifique el formato XML. \nError: ${err}`)
@@ -267,86 +304,85 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 company_id,
                                 status: 'Pendiente'
                             };
-                            setInvoiceData(extractedData);
-                            /*setInvoiceDataView([
-                                {
-                                    key: '1',
-                                    label: 'Nombre del emisor',
-                                    children: extractedData?.emisorNombre,
-                                },
-                                {
-                                    key: '2',
-                                    label: 'RFC del emisor',
-                                    children: extractedData?.emisorRfc,
-                                    span: 2,
-                                },
-                                {
-                                    key: '3',
-                                    label: 'Nombre del receptor',
-                                    children: extractedData?.receptorNombre,
-                                },
-                                {
-                                    key: '4',
-                                    label: 'RFC del receptor',
-                                    children: extractedData?.receptorRfc,
-                                    span: 2,
-                                },
-                                {
-                                    key: '5',
-                                    label: 'UUID',
-                                    children: <strong>{extractedData?.uuid}</strong>
-                                },
-                                {
-                                    key: '6',
-                                    label: 'Folio',
-                                    children: extractedData?.folio,
-                                    span: 2,
-                                },
-                                {
-                                    key: '7',
-                                    label: 'Subtotal ($)',
-                                    children: getCurrencyMoney(extractedData?.subtotal),
-                                },
-                                {
-                                    key: '8',
-                                    label: 'Total ($)',
-                                    children: getCurrencyMoney(extractedData?.total),
-                                },
-                                {
-                                    key: '9',
-                                    label: 'Forma de pago',
-                                    children: extractedData?.formaPago,
-                                },
-                                {
-                                    key: '10',
-                                    label: 'Tipo de moneda',
-                                    children: extractedData?.tipoMoneda,
-                                },
-                                {
-                                    key: '11',
-                                    label: 'Tipo de pago',
-                                    children: extractedData?.tipoPago,
-                                },
-                                {
-                                    key: '12',
-                                    label: 'Condiciones de pago',
-                                    children: extractedData?.condicionesPago,
-                                },
-                                {
-                                    key: '13',
-                                    label: 'Fecha de emisión',
-                                    children: moment(extractedData?.fechaEmision).format('DD-MM-YYYY HH:MM'),
-                                },
-                                {
-                                    key: '14',
-                                    label: 'Fecha de timbrado',
-                                    children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
-                                },
-                            ])*/
-                            console.log("🚀 ~ parseString ~ extractedData:", extractedData)
-                        });
-                        //return 0
-                        console.log("🚀 ~ nextDay:")
+                            setInvoiceData(extractedData);*/
+                        /*setInvoiceDataView([
+                            {
+                                key: '1',
+                                label: 'Nombre del emisor',
+                                children: extractedData?.emisorNombre,
+                            },
+                            {
+                                key: '2',
+                                label: 'RFC del emisor',
+                                children: extractedData?.emisorRfc,
+                                span: 2,
+                            },
+                            {
+                                key: '3',
+                                label: 'Nombre del receptor',
+                                children: extractedData?.receptorNombre,
+                            },
+                            {
+                                key: '4',
+                                label: 'RFC del receptor',
+                                children: extractedData?.receptorRfc,
+                                span: 2,
+                            },
+                            {
+                                key: '5',
+                                label: 'UUID',
+                                children: <strong>{extractedData?.uuid}</strong>
+                            },
+                            {
+                                key: '6',
+                                label: 'Folio',
+                                children: extractedData?.folio,
+                                span: 2,
+                            },
+                            {
+                                key: '7',
+                                label: 'Subtotal ($)',
+                                children: getCurrencyMoney(extractedData?.subtotal),
+                            },
+                            {
+                                key: '8',
+                                label: 'Total ($)',
+                                children: getCurrencyMoney(extractedData?.total),
+                            },
+                            {
+                                key: '9',
+                                label: 'Forma de pago',
+                                children: extractedData?.formaPago,
+                            },
+                            {
+                                key: '10',
+                                label: 'Tipo de moneda',
+                                children: extractedData?.tipoMoneda,
+                            },
+                            {
+                                key: '11',
+                                label: 'Tipo de pago',
+                                children: extractedData?.tipoPago,
+                            },
+                            {
+                                key: '12',
+                                label: 'Condiciones de pago',
+                                children: extractedData?.condicionesPago,
+                            },
+                            {
+                                key: '13',
+                                label: 'Fecha de emisión',
+                                children: moment(extractedData?.fechaEmision).format('DD-MM-YYYY HH:MM'),
+                            },
+                            {
+                                key: '14',
+                                label: 'Fecha de timbrado',
+                                children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
+                            },
+                        ])*/
+                        /*console.log("🚀 ~ parseString ~ extractedData:", extractedData)
+                    });
+                    console.log("🚀 ~ nextDay:")*/
                     }
                     console.log("🚀 ~ nextDay: 2")
                     const nextDay = new Date(values?.date_out);
