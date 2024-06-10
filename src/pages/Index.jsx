@@ -16,6 +16,7 @@ const Index = ({ }) => {
 
     return (
         <div style={{ padding: 20 }}>
+            <h1>3</h1>
             <HStack gap={4} justifyContent={'space-between'} style={{ flexWrap: 'wrap' }}>
                 <div className='container-statistic'>
                     <div className='icon-statistic' style={{ backgroundColor: 'blue' }}>

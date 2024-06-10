@@ -268,7 +268,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 status: 'Pendiente'
                             };
                             setInvoiceData(extractedData);
-                            setInvoiceDataView([
+                            /*setInvoiceDataView([
                                 {
                                     key: '1',
                                     label: 'Nombre del emisor',
@@ -342,11 +342,13 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                     label: 'Fecha de timbrado',
                                     children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
                                 },
-                            ])
+                            ])*/
                             console.log("🚀 ~ parseString ~ extractedData:", extractedData)
                         });
                         //return 0
+                        console.log("🚀 ~ nextDay:")
                     }
+                    console.log("🚀 ~ nextDay: 2")
                     const nextDay = new Date(values?.date_out);
                     console.log("🚀 ~ nextDay:", nextDay)
                     nextDay.setDate(nextDay.getDate() + 1);
@@ -438,7 +440,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                             <ModalCloseButton disabled={isSubmitting} />
                             <Divider />
                             <ModalBody>
-                                {!panel ?
+                                {!panel &&
                                     <div className='tab-panel'>
                                         <Stack direction='row' className='form-field' spacing={4}>
                                             <FormControl isInvalid={props.errors.id_truck && props.touched.id_truck}>
@@ -580,9 +582,10 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                 </div>
                                             </Stack>
                                         }
-                                    </div> :
-                                    <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />
+                                    </div> /* :
+                                    <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />*/
                                 }
+
                                 {/** invoiceData */}
 
                             </ModalBody>
