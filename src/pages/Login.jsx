@@ -1,13 +1,19 @@
-import React, { useEffect, useState, useMemo, useContext, useRef } from 'react';
-import { useParams, Link, NavLink, useNavigate, useLocation } from "react-router-dom"
-import { Button, notification, Space, Spin, Flex } from 'antd';
-import { connect, useDispatch, useStore, } from "react-redux";
+import React, { useState, useContext, useRef } from 'react';
+import { useNavigate } from "react-router-dom"
+import { notification, } from 'antd';
+import { connect } from "react-redux";
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import {
-    useBreakpointValue,
-} from '@chakra-ui/react';
+import { useBreakpointValue } from '@chakra-ui/react';
 import Context from '../context/Context';
-import { messagesNotificationTruck, supabase } from '../utils/supabase';
+import { messagesNotificationLogin, supabase } from '../utils/supabase';
+
+const openNotificationWithIcon = (api, type, description) => {
+    api[type]({
+        message: messagesNotificationLogin[type].message,
+        description: messagesNotificationLogin[type].description || description,
+    });
+};
+
 
 function Login({ openSession }) {
     const navigate = useNavigate();
@@ -16,53 +22,51 @@ function Login({ openSession }) {
     const form = useRef();
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const [api, contextHolder] = notification.useNotification();
+    const openNotification = (type, description) => openNotificationWithIcon(api, type, description)
 
     const [data, setData] = useState({
         email: '',
         password: ''
     });
 
-    const [load, setLoad] = useState(false);
-    const [company, setCompany] = useState(null);
     const handleChange = (event) => {
         const { value, name } = event.currentTarget;
         setData({ ...data, [name]: value });
     }
-    const handleLogin = async () => {
-        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    const handleLogin = async () => {
         if (!data.email.trim() || !data.password.trim()) {
-            alert('campos vacios')
+            openNotification('warning', 'Debe rellenar los campos de correo y contraseña')
             return;
         }
 
         if (!regexEmail.test(data.email)) {
-            alert('email no valido')
+            openNotification('warning', 'Correo electrónico no valido')
             return;
         }
 
-        const { data: user_, error } = await supabase
-            .from('user')
-            .select(`*, company:company_id (*)`)
-            .eq('email', data?.email.trim())
-            .eq('password', data?.password.trim());
+        const { data: user_, error } = await supabase.from('user').select(`*, company:company_id (*)`).eq('email', data?.email.trim()).eq('password', data?.password.trim());
         console.log("🚀 ~ handleLogin ~ data:", data)
         console.log("🚀 ~ handleLogin ~ error:", error)
         console.log("🚀 ~ handleLogin ~ user:", user_)
-        if (error) {
-            alert('usuario no encontrado')
-            return;
-        }
 
-        openSession('OPEN_', user_[0])
-        setTimeout(() => {
-            signIn()
-            navigate(`/home`);
-        }, 2000);
+        if (user_[0]) {
+            openSession('OPEN_', user_[0])
+            openNotification('success')
+            setTimeout(() => {
+                signIn()
+                navigate(`/home`);
+            }, 1500);
+        } else {
+            openNotification('error')
+        }
     };
 
     return (
-        <div className="flex min-h-full flex-1" style={{ flexDirection: 'row-reverse' }} >
+        <div className="flex min-h-full flex-1" style={{ flexDirection: 'row-reverse' }}>
+            {contextHolder}
             {!mobile &&
                 <img
                     className=""

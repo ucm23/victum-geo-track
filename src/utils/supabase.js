@@ -30,3 +30,16 @@ export const messagesNotificationTruck = {
         message: 'Advertencia'
     }
 }
+
+export const messagesNotificationLogin = {
+    success: {
+        message: 'Inicio éxitoso',
+    },
+    error: {
+        message: 'Error',
+        description: 'Hubo un problema al enviar los datos. Por favor, inténtalo de nuevo.',
+    },
+    warning: {
+        message: 'Advertencia'
+    }
+}
