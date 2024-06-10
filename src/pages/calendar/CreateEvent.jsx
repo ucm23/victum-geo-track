@@ -22,7 +22,8 @@ import { Breadcrumb, Descriptions, notification, Button, Tooltip, Checkbox, Time
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik'
+import LoaderList from '../../components/LoaderList';;
 import { useSelector } from 'react-redux';
 
 const messagesNotification = {
@@ -243,13 +244,13 @@ const CreateEvent = ({ }) => {
         const phoneNumber = drivers[2].children;
         let id = item?.id * 12345;
         console.log("🚀 ~ sendMessage ~ id:", id)
-        const message = `Hola, te envio una orden de trabajo con el código ${item?.title}\nDirijase al link https://help-victum-repse.vercel.app/order/work/progress/${id}`;
+        const message = `Hola ${drivers[0].children},\n\nTe envío una orden de trabajo con el código ${item?.title}.\nDirígete al siguiente enlace: https://help-victum-repse.vercel.app/order/work/progress/${id}.`;
         const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
         window.open(whatsappURL, '_blank');
     };
 
     if (!loading) {
-        return <h1>Cargando...</h1>
+        return <LoaderList />
     }
 
     return (
@@ -283,7 +284,7 @@ const CreateEvent = ({ }) => {
                     <h1 style={{ fontSize: 19, fontWeight: '600', color: 'black' }}>Orden de trabajo {item?.title}</h1>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', alignContent: 'center' }}>
-                    <Tooltip title="Enviar orden de trabajo al conductor">
+                    <Tooltip title="Enviar orden de trabajo al operador">
                         <Button type="primary" icon={<WhatsAppOutlined />} onClick={sendMessage} />
                     </Tooltip>
                 </div>

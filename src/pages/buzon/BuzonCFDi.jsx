@@ -124,8 +124,10 @@ const BuzonCFDi = ({ }) => {
     }
 
     const colorScheme = {
-        'Pendiente': 'black',
-        'Entrada': 'gray'
+        'Pendiente': 'red',
+        'Entrada': 'gray',
+        'Pagado': 'blue',
+        'Liquidado': 'green'
     }
 
     const getColorStatus = (name) => {

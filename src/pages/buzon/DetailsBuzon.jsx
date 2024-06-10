@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Field, Form, Formik } from 'formik';
-import { messagesNotificationTruck, supabase } from '../../utils/supabase';
 import { styles } from '../../utils/styles';
-import { notification, Button, Descriptions } from 'antd';
+import { Button, Descriptions } from 'antd';
 import {
-    Input,
     Stack,
-    Select,
-    FormControl,
-    FormLabel,
     Divider,
     ModalHeader,
     ModalFooter,
@@ -19,22 +13,8 @@ import '../../assets/styles/truck.css'
 import moment from 'moment/moment';
 import { getCurrencyMoney } from '../../utils/moment-config';
 
-const openNotificationWithIcon = (api, type, description) => {
-    api[type]({
-        message: messagesNotificationTruck[type].message,
-        description: messagesNotificationTruck[type].description || description,
-    });
-};
-
 const DetailsBuzon = ({ company_id, onClose, item, setUpList }) => {
 
-    const [errors, setErrors] = useState(false)
-    const [isSubmitting, setSubmitting] = useState(false)
-    const [api, contextHolder] = notification.useNotification();
-    const openNotification = (type, description) => openNotificationWithIcon(api, type, description)
-    const [groups, setGroups] = useState([]);
-    let error = 'Campo requerido';
-    const validate = (value) => !value && error;
     const [invoiceDataView, setInvoiceDataView] = useState([]);
 
     useEffect(() => {
@@ -118,7 +98,6 @@ const DetailsBuzon = ({ company_id, onClose, item, setUpList }) => {
 
     return (
         <div>
-            {contextHolder}
             <ModalHeader>{`Factura ${item?.folio} - ${item?.receptorNombre}`}</ModalHeader>
             <ModalCloseButton />
             <Divider />
@@ -126,11 +105,11 @@ const DetailsBuzon = ({ company_id, onClose, item, setUpList }) => {
                 <div className='tab-panel'>
                     <Stack mt={2} />
                     <Descriptions
-                        //title={`Factura ${item?.folio} - ${item?.receptorNombre}`}
                         size={'small'}
                         bordered
                         layout="vertical"
-                        items={invoiceDataView} />
+                        items={invoiceDataView}
+                    />
                 </div>
             </ModalBody>
             <Divider mt={3} />

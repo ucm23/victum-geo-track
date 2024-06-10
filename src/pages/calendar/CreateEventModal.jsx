@@ -206,6 +206,9 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
             console.log("🚀 ~ saveAll ~ error:", error)
         } finally {
             setSubmitting(false)
+            setTimeout(function(){
+                onClose()
+            }, 2222);
         }
     }
 
@@ -271,6 +274,81 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
 
                             setInvoiceData(extractedData);
                             console.log("🚀 ~ parseXMLFast ~ extractedData:", extractedData);
+                            setInvoiceDataView([
+                                {
+                                    key: '1',
+                                    label: 'Nombre del emisor',
+                                    children: extractedData?.emisorNombre,
+                                },
+                                {
+                                    key: '2',
+                                    label: 'RFC del emisor',
+                                    children: extractedData?.emisorRfc,
+                                    span: 2,
+                                },
+                                {
+                                    key: '3',
+                                    label: 'Nombre del receptor',
+                                    children: extractedData?.receptorNombre,
+                                },
+                                {
+                                    key: '4',
+                                    label: 'RFC del receptor',
+                                    children: extractedData?.receptorRfc,
+                                    span: 2,
+                                },
+                                {
+                                    key: '5',
+                                    label: 'UUID',
+                                    children: <strong>{extractedData?.uuid}</strong>
+                                },
+                                {
+                                    key: '6',
+                                    label: 'Folio',
+                                    children: extractedData?.folio,
+                                    span: 2,
+                                },
+                                {
+                                    key: '7',
+                                    label: 'Subtotal ($)',
+                                    children: getCurrencyMoney(extractedData?.subtotal),
+                                },
+                                {
+                                    key: '8',
+                                    label: 'Total ($)',
+                                    children: getCurrencyMoney(extractedData?.total),
+                                },
+                                {
+                                    key: '9',
+                                    label: 'Forma de pago',
+                                    children: extractedData?.formaPago,
+                                },
+                                {
+                                    key: '10',
+                                    label: 'Tipo de moneda',
+                                    children: extractedData?.tipoMoneda,
+                                },
+                                {
+                                    key: '11',
+                                    label: 'Tipo de pago',
+                                    children: extractedData?.tipoPago,
+                                },
+                                {
+                                    key: '12',
+                                    label: 'Condiciones de pago',
+                                    children: extractedData?.condicionesPago,
+                                },
+                                {
+                                    key: '13',
+                                    label: 'Fecha de emisión',
+                                    children: moment(extractedData?.fechaEmision).format('DD-MM-YYYY HH:MM'),
+                                },
+                                {
+                                    key: '14',
+                                    label: 'Fecha de timbrado',
+                                    children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
+                                },
+                            ])
                         } catch (err) {
                             console.error('Error parsing XML:', err);
                             alert(`Verifique el formato XML. \nError: ${err}`);
@@ -305,81 +383,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 status: 'Pendiente'
                             };
                             setInvoiceData(extractedData);*/
-                        /*setInvoiceDataView([
-                            {
-                                key: '1',
-                                label: 'Nombre del emisor',
-                                children: extractedData?.emisorNombre,
-                            },
-                            {
-                                key: '2',
-                                label: 'RFC del emisor',
-                                children: extractedData?.emisorRfc,
-                                span: 2,
-                            },
-                            {
-                                key: '3',
-                                label: 'Nombre del receptor',
-                                children: extractedData?.receptorNombre,
-                            },
-                            {
-                                key: '4',
-                                label: 'RFC del receptor',
-                                children: extractedData?.receptorRfc,
-                                span: 2,
-                            },
-                            {
-                                key: '5',
-                                label: 'UUID',
-                                children: <strong>{extractedData?.uuid}</strong>
-                            },
-                            {
-                                key: '6',
-                                label: 'Folio',
-                                children: extractedData?.folio,
-                                span: 2,
-                            },
-                            {
-                                key: '7',
-                                label: 'Subtotal ($)',
-                                children: getCurrencyMoney(extractedData?.subtotal),
-                            },
-                            {
-                                key: '8',
-                                label: 'Total ($)',
-                                children: getCurrencyMoney(extractedData?.total),
-                            },
-                            {
-                                key: '9',
-                                label: 'Forma de pago',
-                                children: extractedData?.formaPago,
-                            },
-                            {
-                                key: '10',
-                                label: 'Tipo de moneda',
-                                children: extractedData?.tipoMoneda,
-                            },
-                            {
-                                key: '11',
-                                label: 'Tipo de pago',
-                                children: extractedData?.tipoPago,
-                            },
-                            {
-                                key: '12',
-                                label: 'Condiciones de pago',
-                                children: extractedData?.condicionesPago,
-                            },
-                            {
-                                key: '13',
-                                label: 'Fecha de emisión',
-                                children: moment(extractedData?.fechaEmision).format('DD-MM-YYYY HH:MM'),
-                            },
-                            {
-                                key: '14',
-                                label: 'Fecha de timbrado',
-                                children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
-                            },
-                        ])*/
+                        /**/
                         /*console.log("🚀 ~ parseString ~ extractedData:", extractedData)
                     });
                     console.log("🚀 ~ nextDay:")*/
@@ -476,7 +480,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                             <ModalCloseButton disabled={isSubmitting} />
                             <Divider />
                             <ModalBody>
-                                {!panel &&
+                                {!panel ?
                                     <div className='tab-panel'>
                                         <Stack direction='row' className='form-field' spacing={4}>
                                             <FormControl isInvalid={props.errors.id_truck && props.touched.id_truck}>
@@ -618,8 +622,8 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                 </div>
                                             </Stack>
                                         }
-                                    </div> /* :
-                                    <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />*/
+                                    </div> :
+                                    <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />
                                 }
 
                                 {/** invoiceData */}
