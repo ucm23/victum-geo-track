@@ -238,3 +238,30 @@ img:hover {
 .flex.min-h-full.flex-1 {
   height: 100vh;
 }
+
+.container-statistic {
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  /*border: 1px solid gray;*/
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /*padding-right: 25px;*/
+  background-color: white;
+  padding: 4px;
+}
+
+.icon-statistic {
+  display: flex;
+  padding: 20px;
+  color: white;
+  /*border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;*/
+  border-radius: 8px;
+}
+
+.label-statistic {
+  padding: 12px 25px 12px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}

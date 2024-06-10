@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import CreateTruckModal from './CreateTruckModal';
 import PaginationSimple from '../../components/PaginationSimple';
+import LoaderList from '../../components/LoaderList';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
 import SearchSimple from '../../components/SearchSimple';
@@ -37,6 +38,7 @@ const Truck = ({ }) => {
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [length, setLength] = useState(0);
+    const [loader, setLoader] = useState(false);
     const totalPages = useMemo(() => Math.ceil(length / pageSize), [length]);
     const [api, contextHolder] = notification.useNotification();
     const [plate, setPlate] = useState('')
@@ -74,6 +76,7 @@ const Truck = ({ }) => {
 
     const getTodos = async () => {
         try {
+            setLoader(false)
             let response = plate
                 ? await supabase.rpc('get_trucks_by_company_and_plate', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
                 : await supabase.rpc('get_trucks_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
@@ -85,6 +88,7 @@ const Truck = ({ }) => {
             console.log("🚀 ~ getTodos ~ error:", error)
         } finally {
             setUpList(false)
+            setLoader(true)
         }
     }
 
@@ -143,6 +147,7 @@ const Truck = ({ }) => {
                     />
                 </div>
                 <Divider />
+                {loader ?
                 <div className="tabs-container">
                     <div className="tabla">
                         <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
@@ -169,7 +174,9 @@ const Truck = ({ }) => {
                                 />}
                         </div>
                     </div>
-                </div>
+                </div> :
+                    <LoaderList />
+                }
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>

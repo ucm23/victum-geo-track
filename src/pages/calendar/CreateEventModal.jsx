@@ -264,7 +264,8 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 condicionesPago: comprobante['$'].CondicionesDePago,
                                 fechaEmision: comprobante['$'].Fecha,
                                 fechaTimbrado: complemento['$'].FechaTimbrado,
-                                company_id
+                                company_id,
+                                status: 'Pendiente'
                             };
                             setInvoiceData(extractedData);
                             console.log("🚀 ~ parseString ~ extractedData:", extractedData)

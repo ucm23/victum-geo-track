@@ -12,11 +12,13 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
+    Spinner
 } from '@chakra-ui/react'
 import CreateUserModal from './CreateUserModal';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
+import LoaderList from '../../components/LoaderList';
 import SearchSimple from '../../components/SearchSimple';
 import { Dropdown, Layout, notification } from 'antd';
 import { useSelector } from 'react-redux';
@@ -37,6 +39,7 @@ const Users = ({ }) => {
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [length, setLength] = useState(0);
+    const [loader, setLoader] = useState(false);
     const totalPages = useMemo(() => Math.ceil(length / pageSize), [length]);
     const [api, contextHolder] = notification.useNotification();
     const [plate, setPlate] = useState('')
@@ -74,6 +77,7 @@ const Users = ({ }) => {
 
     const getTodos = async () => {
         try {
+            setLoader(false)
             let response = plate
                 ? await supabase.rpc('get_users_by_company_and_name', { _company_id_: company_id, _search_term: plate, _page: page, _page_size: pageSize })
                 : await supabase.rpc('get_users_by_company_', { _company_id_: company_id, _page: page, _page_size: pageSize });
@@ -85,6 +89,7 @@ const Users = ({ }) => {
             console.log("🚀 ~ getTodos ~ error:", error)
         } finally {
             setUpList(false)
+            setLoader(true)
         }
     }
 
@@ -142,32 +147,36 @@ const Users = ({ }) => {
                     />
                 </div>
                 <Divider />
-                <div className="tabs-container">
-                    <div className="tabla">
-                        <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
-                            <table>
-                                <thead className="cabecera">
-                                    <tr>
-                                        <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th className='th-center'>NO EMPLEADO</th>
-                                        <th>NOMBRE</th>
-                                        <th>CORREO</th>
-                                        <th>NO TELÉFONO</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item, index) => renderItem({ item, index }))}
-                                </tbody>
-                            </table>
-                            {!data.length &&
-                                <ListEmpty
-                                    explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
-                                    newItem={handleUpdateItem}
-                                />}
+                {loader ?
+                    <div className="tabs-container">
+                        <div className="tabla">
+                            <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
+                                <table>
+                                    <thead className="cabecera">
+                                        <tr>
+                                            <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
+                                            <th className='th-center'>NO EMPLEADO</th>
+                                            <th>NOMBRE</th>
+                                            <th>CORREO</th>
+                                            <th>NO TELÉFONO</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item, index) => renderItem({ item, index }))}
+                                    </tbody>
+                                </table>
+                                {!data.length &&
+                                    <ListEmpty
+                                        explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
+                                        newItem={handleUpdateItem}
+                                    />}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div> :
+                    <LoaderList />
+                }
+
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>
@@ -176,7 +185,7 @@ const Users = ({ }) => {
                             onClose={onClose}
                             item={item}
                             setUpList={setUpList}
-                            />
+                        />
                     </ModalContent>
                 </Modal>
             </Content>

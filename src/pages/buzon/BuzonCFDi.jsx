@@ -16,12 +16,14 @@ import {
     ModalContent,
 } from '@chakra-ui/react'
 import CreateUserModal from './DetailsBuzon';
+import LoaderList from '../../components/LoaderList';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
 import SearchSimple from '../../components/SearchSimple';
 import { Dropdown, Layout, notification } from 'antd';
 import { Descriptions } from 'antd';
+import { Badge } from '@chakra-ui/react'
 import moment from 'moment/moment';
 import { getCurrencyMoney } from '../../utils/moment-config';
 import { useSelector } from 'react-redux';
@@ -43,6 +45,7 @@ const BuzonCFDi = ({ }) => {
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [length, setLength] = useState(0);
+    const [loader, setLoader] = useState(false);
     const totalPages = useMemo(() => Math.ceil(length / pageSize), [length]);
     const [api, contextHolder] = notification.useNotification();
     const [plate, setPlate] = useState('')
@@ -80,6 +83,7 @@ const BuzonCFDi = ({ }) => {
 
     const getTodos = async () => {
         try {
+            setLoader(false)
             let response = plate
                 ? await supabase.rpc('get_invoices_by_company_and_folio', { _company_id: company_id, _folio: plate, _page: page, _page_size: pageSize })
                 : await supabase.rpc('get_invoices_by_company', { _company_id: company_id, _page: page, _page_size: pageSize });
@@ -91,6 +95,7 @@ const BuzonCFDi = ({ }) => {
             console.log("🚀 ~ getTodos ~ error:", error)
         } finally {
             setUpList(false)
+            setLoader(true)
         }
     }
 
@@ -118,6 +123,15 @@ const BuzonCFDi = ({ }) => {
         }
     }
 
+    const colorScheme = {
+        'Pendiente': 'black',
+        'Entrada': 'gray'
+    }
+
+    const getColorStatus = (name) => {
+        return colorScheme[name] || 'pink'
+    }
+
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
@@ -129,7 +143,7 @@ const BuzonCFDi = ({ }) => {
                 <td className='th-center'>{item?.tipoMoneda}</td>
                 <td className='th-center'>$ {getCurrencyMoney(item?.total)}</td>
                 <td className='th-center'>{moment(item?.fechaEmision).format('DD-MM-YYYY HH:MM a')}</td>
-                <td className='th-center'>{item?.status}</td>
+                <td className='th-center'><Badge colorScheme={getColorStatus(item?.status)}>{item?.status}</Badge></td>
                 <td className='th-center'>
                     <Dropdown menu={{
                         items: [
@@ -165,6 +179,7 @@ const BuzonCFDi = ({ }) => {
                     />
                 </div>
                 <Divider />
+                {loader ?
                 <div className="tabs-container">
                     <div className="tabla">
                         <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
@@ -194,7 +209,9 @@ const BuzonCFDi = ({ }) => {
                                 />}
                         </div>
                     </div>
-                </div>
+                </div> :
+                    <LoaderList />
+                }
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>

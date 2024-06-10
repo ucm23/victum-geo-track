@@ -53,8 +53,8 @@ function App() {
                     <NavBar>
                         <Routes>
                             <Route
-                                exact 
-                                index 
+                                exact
+                                index
                                 path="/home"
                                 element={<Index />}
                             />

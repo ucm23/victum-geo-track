@@ -406,6 +406,8 @@ const CreateEvent = ({ }) => {
                                                                 console.log("🚀 ~ onSubmit={ ~ error:", error)
                                                                 console.log("🚀 ~ onSubmit={ ~ data:", data)
                                                                 console.log(values)
+                                                                const { data: factura, error: e_f } = await supabase.from('invoices').update({ status: 'Entrada' }).eq('order_id', item?.id).select()
+                                                                alert('Orden de trabajo y factura actualizada')
                                                             } catch (error) {
                                                                 console.log("🚀 ~ onSubmit={ ~ error:", error)
                                                             } finally {

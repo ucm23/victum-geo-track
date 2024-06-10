@@ -18,6 +18,7 @@ import CreateRoadModal from './CreateRoadModal';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
 import ListEmpty from '../../components/ListEmpty';
+import LoaderList from '../../components/LoaderList';
 import { Dropdown, Layout, notification } from 'antd';
 import { getCurrencyMoney } from '../../utils/moment-config';
 const { Content } = Layout;
@@ -37,6 +38,7 @@ const Roads = ({ }) => {
     const [page, setPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [length, setLength] = useState(0);
+    const [loader, setLoader] = useState(false);
     const totalPages = useMemo(() => Math.ceil(length / pageSize), [length]);
     const [api, contextHolder] = notification.useNotification();
     const [plate, setPlate] = useState('')
@@ -74,6 +76,7 @@ const Roads = ({ }) => {
 
     const getTodos = async () => {
         try {
+            setLoader(false)
             let { data, error } = await supabase.rpc('get_routes_by_company_', { _company_id: company_id, _page: page, _page_size: pageSize });
             if (error) return;
             setData(data.items || []);
@@ -82,6 +85,7 @@ const Roads = ({ }) => {
             console.log("🚀 ~ getTodos ~ error:", error)
         } finally {
             setUpList(false)
+            setLoader(true)
         }
     }
 
@@ -138,6 +142,7 @@ const Roads = ({ }) => {
                     />
                 </div>
                 <Divider />
+                {loader ?
                 <div className="tabs-container">
                     <div className="tabla">
                         <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
@@ -162,7 +167,9 @@ const Roads = ({ }) => {
                                 />}
                         </div>
                     </div>
-                </div>
+                </div> :
+                    <LoaderList />
+                }
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>
