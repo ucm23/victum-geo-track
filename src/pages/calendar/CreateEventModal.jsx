@@ -268,7 +268,6 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 status: 'Pendiente'
                             };
                             setInvoiceData(extractedData);
-                            console.log("🚀 ~ parseString ~ extractedData:", extractedData)
                             setInvoiceDataView([
                                 {
                                     key: '1',
@@ -344,10 +343,12 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                     children: moment(extractedData?.fechaTimbrado).format('DD-MM-YYYY HH:MM'),
                                 },
                             ])
+                            console.log("🚀 ~ parseString ~ extractedData:", extractedData)
                         });
                         //return 0
                     }
                     const nextDay = new Date(values?.date_out);
+                    console.log("🚀 ~ nextDay:", nextDay)
                     nextDay.setDate(nextDay.getDate() + 1);
 
                     const newValues = {
@@ -359,6 +360,8 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                         date_out: `${values?.date_out}T00:00:00`,
                         date_arrival: nextDay.toISOString().split('T')[0] + 'T00:00:00',
                     }
+
+                    console.log("🚀 ~ newValues:", newValues)
 
                     let dataInsert = {
                         //...newValues, 
