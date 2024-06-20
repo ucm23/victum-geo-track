@@ -15,7 +15,6 @@ import {
     ModalOverlay,
     ModalContent,
 } from '@chakra-ui/react'
-import CreateUserModal from './DetailsBuzon';
 import LoaderList from '../../components/LoaderList';
 import PaginationSimple from '../../components/PaginationSimple';
 import HeaderTitle from '../../components/HeaderTitle';
@@ -88,6 +87,7 @@ const BuzonCFDi = ({ }) => {
                 ? await supabase.rpc('get_invoices_by_company_and_folio', { _company_id: company_id, _folio: plate, _page: page, _page_size: pageSize })
                 : await supabase.rpc('get_invoices_by_company', { _company_id: company_id, _page: page, _page_size: pageSize });
             const { data, error } = response;
+
             if (error) return;
             setData(data.items || []);
             setLength(data?.totalItems || 0)
@@ -105,14 +105,12 @@ const BuzonCFDi = ({ }) => {
     };
 
     const downloadFile = async ({ id, type }) => {
-        let { data: travel, error } = await supabase.from('travel').select("files").eq('id', id)
-        console.log("🚀 ~ downloadFile ~ error:", error)
-        console.log("🚀 ~ downloadFile ~ travel:", travel[0]?.files)
+        let { data: travel } = await supabase.from('travel').select("files").eq('id', id)
 
         let foundItem = null;
         if (type == 'xml') foundItem = travel[0]?.files.find(item => item.mime.includes('xml'));
         else foundItem = travel[0]?.files.find(item => item.mime.includes('pdf'));
-        
+
         if (foundItem) {
             const link = document.createElement('a');
             link.href = `http://api-metrix.victum-re.online/geo_truck/travel_files/${foundItem?.id}/download`;
@@ -130,22 +128,26 @@ const BuzonCFDi = ({ }) => {
         'Liquidado': 'green'
     }
 
-    const getColorStatus = (name) => {
-        return colorScheme[name] || 'pink'
-    }
+    const getColorStatus = (name) => colorScheme[name] || 'pink';
 
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
+                <td>
+                    <strong>{item?.receptorNombre}</strong><br />
+                    <span className='color-gray'>{item?.receptorRfc}</span>
+                </td>
+                <td>
+                    <strong>{item?.emisorNombre}</strong><br />
+                    <span className='color-gray'>{item?.emisorRfc}</span>
+                </td>
                 <th className='th-center'>{item?.folio}</th>
-                <td className='th-center'>{item?.receptorNombre}</td>
-                <td className='th-center'>{item?.emisorNombre}</td>
                 <td className='th-center'>{item?.tipoPago}</td>
                 <td className='th-center'>{item?.tipoMoneda}</td>
                 <td className='th-center'>$ {getCurrencyMoney(item?.total)}</td>
                 <td className='th-center'>{moment(item?.fechaEmision).format('DD-MM-YYYY HH:MM a')}</td>
-                <td className='th-center'><Badge colorScheme={getColorStatus(item?.status)}>{item?.status}</Badge></td>
+                <td className='th-center'><Badge fontWeight={'400'} colorScheme={getColorStatus(item?.status)}>{item?.status}</Badge></td>
                 <td className='th-center'>
                     <Dropdown menu={{
                         items: [
@@ -161,6 +163,8 @@ const BuzonCFDi = ({ }) => {
             </tr>
         );
     };
+
+    const th_ = ['FOLIO', 'PAGO', 'MONEDA', 'TOTAL', 'FECHA DE EMISIÓN', 'ESTADO', '']
 
     return (
         <Layout className='content-layout'>
@@ -182,38 +186,31 @@ const BuzonCFDi = ({ }) => {
                 </div>
                 <Divider />
                 {loader ?
-                <div className="tabs-container">
-                    <div className="tabla">
-                        <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
-                            <table>
-                                <thead className="cabecera">
-                                    <tr>
-                                        <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th className='th-center'>FOLIO</th>
-                                        <th className='th-center'>RECEPTOR</th>
-                                        <th className='th-center'>EMISOR</th>
-                                        <th className='th-center'>Pago</th>
-                                        <th className='th-center'>Moneda</th>
-                                        <th className='th-center'>Total</th>
-                                        <th className='th-center'>Fecha de emisión</th>
-                                        <th className='th-center'>Estado</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item, index) => renderItem({ item, index }))}
-                                </tbody>
-                            </table>
-                            {!data.length &&
-                                <ListEmpty
-                                    explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
-                                    newItem={handleUpdateItem}
-                                />}
+                    <div className="tabs-container">
+                        <div className="tabla">
+                            <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
+                                <table>
+                                    <thead className="cabecera">
+                                        <tr>
+                                            <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
+                                            <th>RECEPTOR</th>
+                                            <th>EMISOR</th>
+                                            {th_.map((item, index) => <th key={`th-${item}-${index}`} className='th-center'>{item}</th>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item, index) => renderItem({ item, index }))}
+                                    </tbody>
+                                </table>
+                                {!data.length &&
+                                    <ListEmpty
+                                        explication={'Diríjase al apartado de calendario para crear una orden de trabajo'}
+                                    //newItem={handleUpdateItem}
+                                    />}
+                            </div>
                         </div>
-                    </div>
-                </div> :
-                    <LoaderList />
-                }
+                    </div> : <LoaderList />}
+
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                     <ModalOverlay />
                     <ModalContent>

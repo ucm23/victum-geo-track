@@ -99,19 +99,6 @@ table {
   border-collapse: collapse;
 }
 
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 300px;
-  border-bottom: 0.01px solid white;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-
 .btn-add-item {
   font-weight: 600;
   font-size: 12px;

@@ -13,6 +13,7 @@ import Calendars from "./pages/calendar/Calendars";
 import CreateEvent from "./pages/calendar/CreateEvent";
 import NavBar from './components/NavBar';
 import Roads from './pages/route/Roads';
+import Status from './pages/settings/status/Status';
 
 function App() {
 
@@ -53,12 +54,12 @@ function App() {
                     <NavBar>
                         <Routes>
                             <Route
-                                exact
-                                index
                                 path="/home"
                                 element={<Index />}
                             />
                             <Route
+                                exact
+                                index
                                 path="*"
                                 element={<Index />}
                             />
@@ -85,6 +86,10 @@ function App() {
                             <Route
                                 path="/routes"
                                 element={<Roads />}
+                            />
+                            <Route
+                                path="/status"
+                                element={<Status />}
                             />
                         </Routes>
                     </NavBar>

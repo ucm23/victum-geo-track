@@ -107,7 +107,7 @@ const Roads = ({ }) => {
                 <th className="sticky-left">{index + 1 + currentPage}</th>
                 <td>{item?.name}</td>
                 <th>{item?.description}</th>
-                <td>$ {getCurrencyMoney(item?.cost)}</td>
+                <td className='th-center'>$ {getCurrencyMoney(item?.cost)}</td>
                 <td>
                     <Dropdown menu={{
                         items: [
@@ -121,6 +121,8 @@ const Roads = ({ }) => {
             </tr>
         );
     };
+
+    const th_ = ['NOMBRE', 'DESCRIPCIÓN', 'COSTO', '']
 
     return (
         <Layout className='content-layout'>
@@ -150,10 +152,7 @@ const Roads = ({ }) => {
                                 <thead className="cabecera">
                                     <tr>
                                         <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th>NOMBRE</th>
-                                        <th>DESCRIPCIÓN</th>
-                                        <th>COSTO</th>
-                                        <th></th>
+                                        {th_.map((item, index) => <th key={`th-${item}-${index}`} className='th-center'>{item}</th>)}
                                     </tr>
                                 </thead>
                                 <tbody>

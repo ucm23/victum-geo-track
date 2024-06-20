@@ -1,10 +1,5 @@
 import moment from 'moment';
-//require('moment/locale/es.js');
 moment.locale('es-MX');
-const hoy = moment()
-console.log(moment.locale());  // Debería imprimir 'fr'
-console.log(hoy); // Debería imprimir la fecha en frances
-
 export default moment;
 
 

@@ -13,7 +13,7 @@ export default function ListEmpty({ explication, newItem }) {
             </div>
             <strong><h1 className='text-list-empty'>No hay resultados para mostrar</h1></strong>
             <h1 className='text-list-empty'>{explication}</h1>
-            <Button onClick={newItem} type="primary" className='btn-add-item' icon={<PlusOutlined />} iconPosition={'start'} size='middle'>Agregar</Button>
+            { newItem && <Button onClick={newItem} type="primary" className='btn-add-item' icon={<PlusOutlined />} iconPosition={'start'} size='middle'>Agregar</Button> }
         </div>
     )
 }

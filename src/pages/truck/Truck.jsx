@@ -108,11 +108,11 @@ const Truck = ({ }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
-                <td>{item?.group_name}</td>
-                <th>{item?.plate}</th>
-                <td>{item?.model}</td>
-                <td>{item?.brand} {item?.sub_brand}</td>
-                <td>{item?.no_econ}</td>
+                <td className='th-center'>{item?.group_name}</td>
+                <th className='th-center'>{item?.plate}</th>
+                <td className='th-center'>{item?.model}</td>
+                <td className='th-center'>{item?.brand} {item?.sub_brand}</td>
+                <td className='th-center'>{item?.no_econ}</td>
                 <td>
                     <Dropdown menu={{
                         items: [
@@ -126,6 +126,8 @@ const Truck = ({ }) => {
             </tr>
         );
     };
+
+    const th_ = ['GRUPO', 'PLACA', 'MODELO', 'MARCA', 'NÚMERO ECONÓMICO', '']
 
     return (
         <Layout className='content-layout'>
@@ -148,33 +150,28 @@ const Truck = ({ }) => {
                 </div>
                 <Divider />
                 {loader ?
-                <div className="tabs-container">
-                    <div className="tabla">
-                        <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
-                            <table>
-                                <thead className="cabecera">
-                                    <tr>
-                                        <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                        <th>GRUPO</th>
-                                        <th>NO PLACA</th>
-                                        <th>MODELO</th>
-                                        <th>MARCA</th>
-                                        <th>NO ECON</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item, index) => renderItem({ item, index }))}
-                                </tbody>
-                            </table>
-                            {!data.length &&
-                                <ListEmpty
-                                    explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
-                                    newItem={handleUpdateItem}
-                                />}
+                    <div className="tabs-container">
+                        <div className="tabla">
+                            <div className="contenido table-scroll" ref={contenedorRef} onScroll={handleScroll}>
+                                <table>
+                                    <thead className="cabecera">
+                                        <tr>
+                                            <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
+                                            {th_.map((item, index) => <th key={`th-${item}-${index}`} className='th-center'>{item}</th>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item, index) => renderItem({ item, index }))}
+                                    </tbody>
+                                </table>
+                                {!data.length &&
+                                    <ListEmpty
+                                        explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
+                                        newItem={handleUpdateItem}
+                                    />}
+                            </div>
                         </div>
-                    </div>
-                </div> :
+                    </div> :
                     <LoaderList />
                 }
                 <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>

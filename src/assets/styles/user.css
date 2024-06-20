@@ -80,8 +80,6 @@
   padding: 10px;
 }
 
-
-
 .table-scroll {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -92,19 +90,6 @@
 table {
   width: 100%;
   border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 300px;
-  border-bottom: 0.01px solid white;
-  border-collapse: collapse;
-  font-size: 11px;
 }
 
 .btn-add-item {

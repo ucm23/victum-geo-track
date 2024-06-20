@@ -28,17 +28,30 @@ const Calendars = ({ }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [upList, setUpList] = useState(false);
     const [item, setItem] = useState(null);
-    const [status, setStatus] = useState([]);
+    const [status, setStatus] = useState(null);
+
+    useEffect(() => {
+        getStatus();
+    }, []);
 
     useEffect(() => {
         getTodos();
-    }, [company_id, upList]);
+    }, [company_id, upList, status]);
 
-    async function getTodos() {
+    async function getStatus() {
         try {
             const { data: status } = await supabase.rpc('_get_status_ordered_by_id', { _company_id_: company_id });
             if (status.length > 0) setStatus(status)
-            console.log("🚀 ~ getTodos ~ status:", status)
+        } catch (error) {
+            console.log("🚀 ~ getTodos ~ error:", error)
+        }
+    }
+
+    async function getTodos() {
+        try {
+            //const { data: status } = await supabase.rpc('_get_status_ordered_by_id', { _company_id_: company_id });
+            //if (status.length > 0) setStatus(status)
+            //console.log("🚀 ~ getTodos ~ status:", status)
             let { data, error } = await supabase.from('travel').select('*').eq('company_id', company_id);
             if (error) return;
             if (data.length > 0) {

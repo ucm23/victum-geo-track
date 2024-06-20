@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Field, Form, Formik } from 'formik';
-import { messagesNotificationTruck, supabase } from '../../utils/supabase';
-import { styles } from '../../utils/styles';
+import { messagesNotificationTruck, supabase } from '../../../utils/supabase';
+import { styles } from '../../../utils/styles';
 import { notification, Button } from 'antd';
 import {
     Input,
@@ -15,7 +15,7 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react'
-import '../../assets/styles/truck.css'
+import '../../../assets/styles/truck.css'
 
 const openNotificationWithIcon = (api, type, description) => {
     api[type]({
@@ -36,7 +36,7 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
     const validate = (value) => !value && error;
 
     useEffect(() => {
-        getGroups();
+        //getGroups();
     }, [company_id]);
 
     async function getGroups() {

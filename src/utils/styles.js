@@ -7,6 +7,6 @@ export const styles = {
     },
     'z-index': {
         zIndex: 100,
-        position: 'absolute'
+        position: 'absolute',
     }
 }

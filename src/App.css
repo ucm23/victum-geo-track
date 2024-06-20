@@ -112,18 +112,17 @@
 }
 
 .header-title {
-  font-size: x-large;
-  font-weight: bold;
+  font-size: large;
+  font-weight: 600;
   padding-left: 12px;
   font-style: italic;
   line-height: normal;
 }
 
 .btn-menu-header {
-  width: 80px;
+  width: 50px;
   display: flex;
   justify-content: center;
-  margin-right: 12px;
 }
 
 .pillar {
@@ -241,27 +240,60 @@ img:hover {
 
 .container-statistic {
   display: flex;
-  flex-direction: row;
-  border-radius: 12px;
+  flex-direction: column;
+  border-radius: 5px;
   /*border: 1px solid gray;*/
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /*padding-right: 25px;*/
   background-color: white;
-  padding: 4px;
+  padding: 14px;
+  width: 24%;
 }
 
 .icon-statistic {
   display: flex;
-  padding: 20px;
+  padding: 8px;
   color: white;
   /*border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;*/
-  border-radius: 8px;
+  border-radius: 6px;
+  background-color: #4b9bff75;
 }
 
 .label-statistic {
-  padding: 12px 25px 12px 40px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+}
+
+.label-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.count-statistic {
+  font-size: medium;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.link-go-view {
+  color: #4b9bff;
+  font-size: small;
+  font-weight: 300;
+}
+.welcome-statistic {
+  font-size: medium;
+  font-weight: 700;
+}
+
+.wrap-list-index {
+  width: 100%;
+  justify-content: space-between;
+}
+
+ul.chakra-wrap__list.css-19lo6pj {
+  width: 100%;
+  justify-content: space-between;
 }

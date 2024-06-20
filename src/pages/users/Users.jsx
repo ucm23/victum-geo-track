@@ -11,8 +11,7 @@ import {
     useDisclosure,
     Modal,
     ModalOverlay,
-    ModalContent,
-    Spinner
+    ModalContent
 } from '@chakra-ui/react'
 import CreateUserModal from './CreateUserModal';
 import PaginationSimple from '../../components/PaginationSimple';
@@ -110,9 +109,10 @@ const Users = ({ }) => {
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
                 <th className='th-center'>{item?.no_econ}</th>
-                <td>{item?.name} {item?.last_name}</td>
-                <th>{item?.email}</th>
-                <th>{item?.phone_number}</th>
+                <td className='th-center'>{item?.name} {item?.last_name}</td>
+                <td className='th-center'>{item?.phone_number}</td>
+                <td className='th-center'>{item?.email}</td>
+                <td className='th-center'>{item?.type_name}</td>
                 <td>
                     <Dropdown menu={{
                         items: [
@@ -126,6 +126,8 @@ const Users = ({ }) => {
             </tr>
         );
     };
+
+    const th_ = ['NÚMERO EMPLEADO', 'NOMBRE', 'TELÉFONO', 'CORREO', 'TIPO', '']
 
     return (
         <Layout className='content-layout'>
@@ -155,11 +157,7 @@ const Users = ({ }) => {
                                     <thead className="cabecera">
                                         <tr>
                                             <th className={`${!scrolling && "sticky-left"} bg-80`}>#</th>
-                                            <th className='th-center'>NO EMPLEADO</th>
-                                            <th>NOMBRE</th>
-                                            <th>CORREO</th>
-                                            <th>NO TELÉFONO</th>
-                                            <th></th>
+                                            {th_.map((item, index) => <th key={`th-${item}-${index}`} className='th-center'>{item}</th>)}
                                         </tr>
                                     </thead>
                                     <tbody>
