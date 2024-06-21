@@ -71,6 +71,16 @@ const menu_ = [
 const menu_cog = [
     {
         key: '1',
+        label: 'Generales',
+        route: '/settings'
+    },
+    {
+        key: '2',
+        label: 'Perfil',
+        route: '/profile'
+    },
+    {
+        key: '1',
         label: 'Estados',
         route: '/status'
     },
@@ -83,7 +93,8 @@ const menu_cog = [
         key: '3',
         label: 'Grupos',
         route: '/groups'
-    }
+    },
+    
 ]
 
 const menu_cog_2 = [
@@ -157,10 +168,10 @@ const NavBar = ({ children }) => {
                                         )}
                                     />
                                     <Divider />
-                                    <div className='div-header-menu-1'>
+                                    {/*<div className='div-header-menu-1'>
                                         <BankOutlined style={{ fontSize: 20 }} />
                                         <h1 style={{ fontSize: 17, fontWeight: '600' }}>Administración</h1>
-                                    </div>
+                                    </div>*/}
                                 </div>
                             </div> :
                             <div className='div-header-3'>
@@ -192,7 +203,7 @@ const NavBar = ({ children }) => {
                             </div>
                         }
 
-                        {!menuCog &&
+                        {/*!menuCog &&
                             <Menu mode="inline" style={{ height: '100%', borderRight: 0, paddingLeft: !menuCog && 24 }}>
                                 {menu_cog_2.map((item, index) =>
                                     <Menu.Item key={`item-menu-cog-${item?.route}-${index}`}>
@@ -200,7 +211,7 @@ const NavBar = ({ children }) => {
                                     </Menu.Item>
                                 )}
                             </Menu>
-                        }
+                        */}
                         {!menuCog &&
                             <div className='div-header-1'>
                                 <div className='div-header-2'>

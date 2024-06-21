@@ -41,27 +41,19 @@ function Login({ openSession }) {
             openNotification('warning', 'Debe rellenar los campos de correo y contraseña')
             return;
         }
-
         if (!regexEmail.test(data.email)) {
             openNotification('warning', 'Correo electrónico no valido')
             return;
         }
-
-        const { data: user_, error } = await supabase.from('user').select(`*, company:company_id (*)`).eq('email', data?.email.trim()).eq('password', data?.password.trim());
-        console.log("🚀 ~ handleLogin ~ data:", data)
-        console.log("🚀 ~ handleLogin ~ error:", error)
-        console.log("🚀 ~ handleLogin ~ user:", user_)
-
+        const { data: user_ } = await supabase.from('user').select(`*, company:company_id (*)`).eq('email', data?.email.trim()).eq('password', data?.password.trim());
         if (user_[0]) {
             openSession('OPEN_', user_[0])
             openNotification('success')
             setTimeout(() => {
                 signIn()
                 navigate(`/home`);
-            }, 1500);
-        } else {
-            openNotification('error')
-        }
+            }, 1250);
+        } else openNotification('error')
     };
 
     return (

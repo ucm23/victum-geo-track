@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Field, Form, Formik } from 'formik';
-import { messagesNotificationTruck, supabase } from '../../utils/supabase';
-import { styles } from '../../utils/styles';
+import { messagesNotificationTruck, supabase } from '../../../utils/supabase';
+import { styles } from '../../../utils/styles';
 import { notification, Button } from 'antd';
 import {
     Input,
@@ -15,7 +15,7 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react'
-import '../../assets/styles/truck.css'
+import '../../../assets/styles/truck.css'
 
 const openNotificationWithIcon = (api, type, description) => {
     api[type]({
@@ -24,7 +24,7 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
+const CreateStatus = ({ company_id, onClose, item, setUpList }) => {
 
     const [errors, setErrors] = useState(false)
     const [selectedValue, setSelectedValue] = useState(true);
@@ -36,28 +36,15 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
     const validate = (value) => !value && error;
 
     useEffect(() => {
-        getGroups();
+        
     }, [company_id]);
 
-    async function getGroups() {
-        let { data, error } = await supabase.from('types').select("*");
-        console.log("🚀 ~ getGroups ~ data:", data)
-        if (error) return;
-        if (data.length > 0) {
-            setGroups(data)
-            setSelectedValue[data[0]?.id]
-        }
-    }
 
     return (
         <Formik
             initialValues={{
                 name: `${item?.name || ""}`,
                 last_name: `${item?.last_name || ""}`,
-                phone_number: `${item?.phone_number || ""}`,
-                email: `${item?.email || ""}`,
-                no_econ: `${item?.no_econ || ""}`,
-                type: `${item?.type || ""}`,
             }}
             onSubmit={async (values, actions) => {
                 try {
@@ -118,24 +105,11 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
                     <Form>
                         <div>
                             {contextHolder}
-                            <ModalHeader>Añadir usuario</ModalHeader>
+                            <ModalHeader>Modificar estado</ModalHeader>
                             <ModalCloseButton />
                             <Divider />
                             <ModalBody>
                                 <div className='tab-panel'>
-                                    {item?.id &&
-                                        <Stack className='form-field'>
-                                            <Field name='no_econ'>
-                                                {({ field, form }) => (
-                                                    <FormControl>
-                                                        <FormLabel>
-                                                            <h1 className='form-label'>Número de empleado</h1>
-                                                        </FormLabel>
-                                                        <Input {...field} disabled />
-                                                    </FormControl>
-                                                )}
-                                            </Field>
-                                        </Stack>}
                                     <Stack direction='row' className='form-field' spacing={4}>
                                         <Field name='name' validate={validate}>
                                             {({ field, form }) => (
@@ -148,69 +122,7 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
                                                 </FormControl>
                                             )}
                                         </Field>
-                                        <Field name='last_name' validate={validate}>
-                                            {({ field, form }) => (
-                                                <FormControl isInvalid={form.errors.last_name && form.touched.last_name}>
-                                                    <FormLabel>
-                                                        <h1 className='form-label requeried'>Apellidos</h1>
-                                                    </FormLabel>
-                                                    <Input {...field} />
-                                                    {form.errors.last_name && <h1 className='form-error'>{form.errors.last_name}</h1>}
-                                                </FormControl>
-                                            )}
-                                        </Field>
                                     </Stack>
-                                    <Stack className='form-field'>
-                                        <FormControl isInvalid={props.errors.type && props.touched.type}>
-                                            <FormLabel>
-                                                <h1 className='form-label requeried'>Grupo</h1>
-                                            </FormLabel>
-                                            <Field
-                                                as={Select}
-                                                name="type"
-                                                placeholder="Seleccionar"
-                                                validate={validate}
-                                                onChange={(e) => {
-                                                    props.handleChange(e);
-                                                    setSelectedValue(e.target.value);
-                                                }}
-                                            >
-                                                {groups.map((item, index) => (
-                                                    <option key={`option-groups-${item?.id}-${index}`} value={item?.id}>
-                                                        {item?.name}
-                                                    </option>
-                                                ))}
-                                            </Field>
-                                            {props.errors.type && <h1 className='form-error'>{props.errors.type}</h1>}
-                                        </FormControl>
-                                    </Stack>
-                                    <Stack className='form-field'>
-                                        <Field name='phone_number' validate={validate}>
-                                            {({ field, form }) => (
-                                                <FormControl isInvalid={form.errors.phone_number && form.touched.phone_number}>
-                                                    <FormLabel>
-                                                        <h1 className='form-label requeried'>Número de teléfono</h1>
-                                                    </FormLabel>
-                                                    <Input {...field} />
-                                                    {form.errors.phone_number && <h1 className='form-error'>{form.errors.phone_number}</h1>}
-                                                </FormControl>
-                                            )}
-                                        </Field>
-                                    </Stack>
-                                    {!cant_drive?.can_drive &&
-                                        <Stack className='form-field'>
-                                            <Field name='email' validate={validate}>
-                                                {({ field, form }) => (
-                                                    <FormControl isInvalid={form.errors.email && form.touched.email}>
-                                                        <FormLabel>
-                                                            <h1 className='form-label requeried'>Correo electrónico</h1>
-                                                        </FormLabel>
-                                                        <Input {...field} />
-                                                        {form.errors.email && <h1 className='form-error'>{form.errors.email}</h1>}
-                                                    </FormControl>
-                                                )}
-                                            </Field>
-                                        </Stack>}
                                 </div>
                             </ModalBody>
                             <Divider mt={3} />
@@ -243,4 +155,4 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
     );
 };
 
-export default CreateUserModal
+export default CreateStatus

@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-    MoreOutlined,
     EditOutlined,
     DeleteOutlined
 } from '@ant-design/icons';
 import '../../../assets/styles/truck.css';
-import { pageSize, supabase, messagesNotificationTruck } from '../../../utils/supabase';
+import { supabase, messagesNotificationTruck } from '../../../utils/supabase';
 import {
     Divider,
     useDisclosure,
@@ -13,15 +12,13 @@ import {
     ModalOverlay,
     ModalContent
 } from '@chakra-ui/react'
-import CreateUserModal from './CreateUserModal';
-import PaginationSimple from '../../../components/PaginationSimple';
+import CreateStatus from './CreateStatus';
 import HeaderTitle from '../../../components/HeaderTitle';
 import ListEmpty from '../../../components/ListEmpty';
 import LoaderList from '../../../components/LoaderList';
 import SearchSimple from '../../../components/SearchSimple';
-import { Dropdown, Layout, notification } from 'antd';
+import { Layout, notification, Badge } from 'antd';
 import { useSelector } from 'react-redux';
-const { Content } = Layout;
 
 const openNotificationWithIcon = (api, type, description) => {
     api[type]({
@@ -41,14 +38,6 @@ const Status = ({ }) => {
     const [item, setItem] = useState(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [upList, setUpList] = useState(false);
-    const [scrolling, setScrolling] = useState(false);
-    const contenedorRef = useRef(null);
-
-    const handleScroll = () => {
-        const scrollTop = contenedorRef.current.scrollTop;
-        const scrollLeft = contenedorRef.current.scrollLeft;
-        setScrolling(scrollLeft === 0 && scrollTop !== 0);
-    };
 
     useEffect(() => {
         getTodos();
@@ -58,11 +47,9 @@ const Status = ({ }) => {
         try {
             setLoader(false)
             let response = plate
-                ? await supabase.from('status').select("*").eq('company_id', company_id)
+                ? await supabase.from('status').select("*").eq('company_id', company_id).ilike('name', `%${plate}%`)
                 : await supabase.from('status').select("*").eq('company_id', company_id);
             const { data, error } = response;
-            console.log("🚀 ~ getTodos ~ error:", error)
-            console.log("🚀 ~ getTodos ~ data:", data)
             if (error) return;
             setData(data || []);
         } catch (error) {
@@ -87,23 +74,17 @@ const Status = ({ }) => {
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className='tr-simple'>
-                <td>{item?.name}</td>
-                <td>{item?.color}</td>
-                <td>
-                    <Dropdown menu={{
-                        items: [
-                            { label: <a onClick={() => handleUpdateItem({ item })}>Modificar</a>, icon: <EditOutlined /> },
-                            { label: <a onClick={() => deleteItem({ id: item?.id })}>Eliminar</a>, icon: <DeleteOutlined /> }
-                        ]
-                    }}>
-                        <a onClick={(e) => e.preventDefault()} className="table-column-logo"><MoreOutlined /></a>
-                    </Dropdown>
+                <td className='tr-simple-align-left-1'>{index+1}</td>
+                <td><Badge color={item?.color} text=' '/>{item?.name}</td>
+                <td className='tr-simple-align-left th-center'>
+                    <a onClick={() => handleUpdateItem({ item })} className="table-column-logo"><EditOutlined /></a>
+                    <a onClick={() => deleteItem({ id: item?.id })} className="table-column-logo"><DeleteOutlined /></a>
                 </td>
             </tr>
         );
     };
 
-    const th_ = ['NOMBRE', 'COLOR', '']
+    const th_ = ['#', `NOMBRE`, 'Acciones']
 
     return (
         <Layout className='content-layout'>
@@ -112,39 +93,39 @@ const Status = ({ }) => {
                 <div className='panel-simple'>
                     <HeaderTitle
                         title={'Estados'}
-                        handle={handleUpdateItem}
+                        //handle={handleUpdateItem}
                         backgroundColor='transparent'
                     />
-                    <div className='content-sub-header-title'>
-                        <SearchSimple setPlate={setPlate} placeholder={'Nombre'} />
-                    </div>
-                    <Divider />
-                    {loader ?
-                        <div>
+                    <div className='panel-simple-children'>
+                        <div className='content-sub-header-simple'>
+                            <SearchSimple setPlate={setPlate} placeholder={'Nombre'} />
+                        </div>
+                        <Divider />
+                        {loader ?
                             <div>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            {th_.map((item, index) => <td key={`td-${item}-${index}`}>{item}</td>)}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.map((item, index) => renderItem({ item, index }))}
-                                    </tbody>
-                                </table>
-                                {!data.length &&
-                                    <ListEmpty
-                                        explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'}
-                                        newItem={handleUpdateItem}
-                                    />}
-                            </div>
-                        </div> : <LoaderList />}
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                {th_.map((item, index) => <td key={`td-status-${item}-${index}`}><strong>{item}</strong></td>)}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.map((item, index) => renderItem({ item, index }))}
+                                        </tbody>
+                                    </table>
+                                    {!data.length && <ListEmpty explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'} />}
+                            </div> : 
+                            <div style={{ padding: 35 }}>
+                                <LoaderList />
+                                </div>
+                            }
+                    </div>
                 </div>
             </div>
-            <Modal onClose={onClose} size={'3xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
+            <Modal onClose={onClose} size={'xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
                 <ModalOverlay />
                 <ModalContent>
-                    <CreateUserModal
+                    <CreateStatus
                         company_id={company_id}
                         onClose={onClose}
                         item={item}

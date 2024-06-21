@@ -113,7 +113,6 @@ td {
   text-align: center;
 }
 
-
 .center-loader {
   height: 100%;
   display: flex;
@@ -299,6 +298,13 @@ span.chakra-badge.chakra-badge-label-page {
   background-color: white;
 }
 
+.content-sub-header-simple {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 12px;
+}
+
 .table-column-logo {
   margin-right: 5px;
 }
@@ -439,7 +445,7 @@ span.ant-upload {
   display: flex;
   flex-direction: row;
   gap: 14px;
-  padding-top: 26px;
+  padding-top: 14px;
 }
 
 :where(.css-dev-only-do-not-override-17seli4).ant-layout .ant-layout-sider-zero-width-trigger {
@@ -464,17 +470,31 @@ span.ant-upload {
   width: 100%;
   margin: 5px;
   max-width: 800px;
-  background-color: white;
+  /*background-color: white;*/
   padding: 0px;
   /*padding-bottom: 75px;*/
   border-radius: 6px;
 }
 
+.panel-simple-children {
+  background-color: white;
+  border-radius: 6px;
+}
+
 .tr-simple {
-  /*border-top: 2.23px solid #eef1f680;*/
-  /*opacity: 0.6;*/
-  border: 0;
-  border-color: #eef1f660;
-  border-style: solid;
-  border-top-width: 1px;
+  border-top: 1px solid #eef1f680;
+}
+td{
+  border-bottom: 0px solid white;
+}
+
+.tr-simple-fill-1 {
+
+}
+
+.tr-simple-align-left {
+  width: 60px;
+}
+.tr-simple-align-left-1 {
+  width: 20px;
 }

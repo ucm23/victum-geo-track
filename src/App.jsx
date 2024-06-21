@@ -14,6 +14,8 @@ import CreateEvent from "./pages/calendar/CreateEvent";
 import NavBar from './components/NavBar';
 import Roads from './pages/route/Roads';
 import Status from './pages/settings/status/Status';
+import General from './pages/settings/general/General';
+
 
 function App() {
 
@@ -90,6 +92,10 @@ function App() {
                             <Route
                                 path="/status"
                                 element={<Status />}
+                            />
+                            <Route
+                                path="/settings"
+                                element={<General />}
                             />
                         </Routes>
                     </NavBar>
