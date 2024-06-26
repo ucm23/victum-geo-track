@@ -19,7 +19,7 @@ import {
 import { supabase } from '../../utils/supabase';
 import { getCurrencyMoney } from '../../utils/moment-config';
 import { Breadcrumb, Descriptions, notification, Button, Tooltip, Checkbox, Timeline, Alert } from 'antd';
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
 import { Field, Form, Formik } from 'formik'

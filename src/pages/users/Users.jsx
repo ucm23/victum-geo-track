@@ -103,7 +103,6 @@ const Users = ({ }) => {
         else getTodos()
     }
 
-
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>

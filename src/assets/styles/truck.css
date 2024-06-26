@@ -484,17 +484,51 @@ span.ant-upload {
 .tr-simple {
   border-top: 1px solid #eef1f680;
 }
-td{
+
+td {
   border-bottom: 0px solid white;
 }
 
-.tr-simple-fill-1 {
-
-}
+.tr-simple-fill-1 {}
 
 .tr-simple-align-left {
   width: 60px;
 }
+
 .tr-simple-align-left-1 {
   width: 20px;
+}
+
+.menu-lis-profile-sider {
+  margin-top: 56px;
+  margin-left: 6px;
+}
+
+.list-item-meta-avatar {
+  align-self: center;
+  background-color: #60b7a3;
+}
+
+.list-item-meta-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+}
+
+.list-item-meta-description {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.menu-list-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
 }

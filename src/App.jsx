@@ -15,7 +15,7 @@ import NavBar from './components/NavBar';
 import Roads from './pages/route/Roads';
 import Status from './pages/settings/status/Status';
 import General from './pages/settings/general/General';
-
+import Groups from './pages/settings/groups/Groups';
 
 function App() {
 
@@ -97,6 +97,11 @@ function App() {
                                 path="/settings"
                                 element={<General />}
                             />
+                            <Route
+                                path="/groups"
+                                element={<Groups />}
+                            />
+                            
                         </Routes>
                     </NavBar>
                 }

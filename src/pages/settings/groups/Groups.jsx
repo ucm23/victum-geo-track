@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import {
-    EditOutlined,
-    DragOutlined
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../../../assets/styles/truck.css';
-import { supabase } from '../../../utils/supabase';
+import { supabase, messagesNotificationTruck } from '../../../utils/supabase';
 import {
     Divider,
     useDisclosure,
@@ -13,7 +10,6 @@ import {
     ModalContent
 } from '@chakra-ui/react'
 import CreateStatus from './CreateStatus';
-import StatusTree from './StatusTree';
 import HeaderTitle from '../../../components/HeaderTitle';
 import ListEmpty from '../../../components/ListEmpty';
 import LoaderList from '../../../components/LoaderList';
@@ -21,7 +17,14 @@ import SearchSimple from '../../../components/SearchSimple';
 import { Layout, notification, Badge } from 'antd';
 import { useSelector } from 'react-redux';
 
-const Status = ({ }) => {
+const openNotificationWithIcon = (api, type, description) => {
+    api[type]({
+        message: messagesNotificationTruck[type].message,
+        description: messagesNotificationTruck[type].description || description,
+    });
+};
+
+const Groups = ({ }) => {
 
     const information_user = useSelector(state => state.login.information_user);
     const { company_id } = information_user;
@@ -31,7 +34,6 @@ const Status = ({ }) => {
     const [data, setData] = useState([]);
     const [item, setItem] = useState(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const { isOpen: isOpen1, onOpen: onOpen1, onClose: onClose1 } = useDisclosure()
     const [upList, setUpList] = useState(false);
 
     useEffect(() => {
@@ -42,8 +44,8 @@ const Status = ({ }) => {
         try {
             setLoader(false)
             let response = plate
-                ? await supabase.from('status').select("*").eq('company_id', company_id).ilike('name', `%${plate}%`)
-                : await supabase.rpc('_get_status_ordered_by_id', { _company_id_: company_id });
+                ? await supabase.from('groups').select("*").eq('company_id', company_id).ilike('name', `%${plate}%`)
+                : await supabase.rpc('_get_groups_ordered_by_id', { _company_id_: company_id });
             const { data, error } = response;
             if (error) return;
             setData(data || []);
@@ -55,19 +57,26 @@ const Status = ({ }) => {
         }
     }
 
-    const handleUpdateItem = ({ item, mode }) => {
+    const handleUpdateItem = ({ item }) => {
         setItem(item || {})
-        if(mode) onOpen(); else onOpen1();
+        onOpen()
     };
+
+    const deleteItem = async ({ id }) => {
+        const { error } = await supabase.from('groups').delete().eq('id', id);
+        console.log("🚀 ~ deleteItem ~ error:", error)
+        if (error) openNotificationWithIcon(api, 'error')
+        else getTodos()
+    }
 
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className='tr-simple'>
-                <td className='tr-simple-align-left-1'>{index+1}</td>
-                <td><Badge color={item?.color} text=' '/>{item?.name}</td>
+                <td className='tr-simple-align-left-1'>{index + 1}</td>
+                <td>{item?.name}</td>
                 <td className='tr-simple-align-left th-center'>
-                    <a onClick={() => handleUpdateItem({ item, mode: true })} className="table-column-logo"><EditOutlined /></a>
-                    <a onClick={() => handleUpdateItem({ item, mode: false })} className="table-column-logo"><DragOutlined /></a>
+                    <a onClick={() => handleUpdateItem({ item })} className="table-column-logo"><EditOutlined /></a>
+                    <a onClick={() => deleteItem({ id: item?.id })} className="table-column-logo"><DeleteOutlined /></a>
                 </td>
             </tr>
         );
@@ -82,8 +91,8 @@ const Status = ({ }) => {
                 <div className='panel-simple'>
                     <HeaderTitle
                         title={'Estados'}
-                        //handle={handleUpdateItem}
                         backgroundColor='transparent'
+                        handle={handleUpdateItem}
                     />
                     <div className='panel-simple-children'>
                         <div className='content-sub-header-simple'>
@@ -92,22 +101,18 @@ const Status = ({ }) => {
                         <Divider />
                         {loader ?
                             <div>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                {th_.map((item, index) => <td key={`td-status-${item}-${index}`}><strong>{item}</strong></td>)}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.map((item, index) => renderItem({ item, index }))}
-                                        </tbody>
-                                    </table>
-                                    {!data.length && <ListEmpty explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'} />}
-                            </div> : 
+                                <table>
+                                    <thead>
+                                        <tr> {th_.map((item, index) => <td key={`td-status-${item}-${index}`}><strong>{item}</strong></td>)}</tr>
+                                    </thead>
+                                    <tbody> {data.map((item, index) => renderItem({ item, index }))} </tbody>
+                                </table>
+                                {!data.length && <ListEmpty explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'} />}
+                            </div> :
                             <div style={{ padding: 35 }}>
                                 <LoaderList />
-                                </div>
-                            }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -123,20 +128,8 @@ const Status = ({ }) => {
                     />
                 </ModalContent>
             </Modal>
-            <Modal onClose={onClose1} isOpen={isOpen1} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
-                <ModalOverlay />
-                <ModalContent>
-                    <StatusTree
-                        company_id={company_id}
-                        onClose={onClose1}
-                        item={item}
-                        setUpList={setUpList}
-                        data={data}
-                    />
-                </ModalContent>
-            </Modal>
         </Layout>
     );
 };
 
-export default Status;
+export default Groups;

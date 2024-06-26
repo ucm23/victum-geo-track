@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import { messagesNotificationTruck, supabase } from '../../utils/supabase';
 import { styles } from '../../utils/styles';
 import { notification, Button, Upload, Descriptions, Steps, theme, message, } from 'antd';
-import { UploadOutlined, CloudUploadOutlined, FileExcelOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, FileExcelOutlined, FilePdfOutlined } from '@ant-design/icons';
 import { getCurrencyMoney } from '../../utils/moment-config';
 import moment from 'moment/moment';
 import {
@@ -23,14 +23,9 @@ import {
     NumberDecrementStepper,
     NumberInput,
     NumberInputField,
-    Box,
-    Icon,
-    Text,
-    Badge,
-    Radio, RadioGroup
 } from '@chakra-ui/react'
 import '../../assets/styles/truck.css'
-import { parseString } from 'xml2js';
+// import { parseString } from 'xml2js';
 import { XMLParser } from 'fast-xml-parser';
 
 const openNotificationWithIcon = (api, type, description) => {
@@ -119,13 +114,10 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
         }
     };
 
-    const [uploading, setUploading] = useState(false);
+    //const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
-        //getDrivers();
-        //getTrucks();
         getRoutes();
-        //getStatus();¿
         const today = new Date();
         today.setDate(today.getDate() /*- 1*/);
         setYesterday(today.toISOString().split('T')[0])
@@ -162,30 +154,12 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
         }
     }
 
-    /*async function getDrivers() {
-        let { data, error } = await supabase.rpc('get_user_drivers_', { _company_id: company_id });
-        if (error) return;
-        if (data.length > 0) setDrivers(data)
-    }
-
-    async function getTrucks() {
-        const { data, error } = await supabase.from('truck').select('*, groups!inner(company_id)').eq('groups.company_id', company_id);
-        if (error) return;
-        if (data.length > 0) setTrucks(data)
-    }*/
-
     async function getRoutes() {
         const { data, error } = await supabase.from('routes').select('*').eq('company_id', company_id);
         if (error) return;
         if (data.length > 0) setRoutes(data)
         if (item?.id_route) setRouteSeleccionado(data.find((item_) => item_?.id === item?.id_route)?.id);
     }
-
-    /*async function getStatus() {
-        const { data, error } = await supabase.rpc('_get_status_ordered_by_id', { _company_id_: company_id });
-        if (error) return;
-        if (data.length > 0) setStatus(data)
-    }*/
 
     function areFilesEquivalent(file1, file2) {
         const getFileNameWithoutExtension = (fileName) => {
@@ -210,14 +184,12 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
             if (!fileContent) return 0
             else {
                 const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" });
-
                 try {
                     const result = parser.parse(fileContent);
                     const comprobante = result['cfdi:Comprobante'];
                     const emisor = comprobante['cfdi:Emisor'];
                     const receptor = comprobante['cfdi:Receptor'];
                     const complemento = comprobante['cfdi:Complemento']['tfd:TimbreFiscalDigital'];
-
                     const extractedData = {
                         emisorNombre: emisor.Nombre,
                         emisorRfc: emisor.Rfc,
@@ -268,65 +240,10 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                     alert(`Verifique el formato XML. \nError: ${err}`);
                 }
             }
-
-
-            /*const { data, error: error_one } = await supabase.from('travel').insert([orderData]).select()
-            if (error_one) {
-                openNotification('error')
-                return 0
-            }
-
-            let bodyContent_one = new FormData();
-            bodyContent_one.append("file", fileList[0].file);
-
-            let response_xml = await fetch(`https://api-metrix.victum-re.online/geo_truck/travel_files/${data[0]?.id}/upload`, {
-                method: "POST",
-                body: bodyContent_one,
-                headers: {}
-            });
-
-            //let data_one = 
-            await response_xml.text();
-            //console.log("🚀 ~ data_one:", data_one)
-            let bodyContent_two = new FormData();
-            bodyContent_two.append("file", fileList[1].file);
-
-            let response_pdf = await fetch(`https://api-metrix.victum-re.online/geo_truck/travel_files/${data[0]?.id}/upload`, {
-                method: "POST",
-                body: bodyContent_two,
-                headers: {}
-            });
-
-            //let data_two = 
-            await response_pdf.text();
-            //console.log("🚀 ~ data_two:", data_two)
-
-            setUpList(true)
-            let response_files = await fetch(`https://api-metrix.victum-re.online/geo_truck/travel_files?travel_id=${data[0]?.id}`);
-            let data_files = await response_files.text();
-            let files = JSON.parse(data_files)
-            const { data: travel_final, error } = await supabase.from('travel').update({ files: files?.data, ot: `OT-${data[0]?.id}` }).eq('id', data[0]?.id).select()
-            console.log("🚀 ~ travel_final:", travel_final)
-            if (error) {
-                openNotification('error')
-                return 0;
-            }
-            invoiceData.order_id = data[0]?.id
-            const { data: invoice, error: error_invoice } = await supabase.from('invoices').insert([invoiceData]).select()
-            console.log("🚀 ~ saveAll ~ error_invoice:", error_invoice)
-            console.log("🚀 ~ saveAll ~ invoice:", invoice)
-            if (error_invoice) {
-                openNotification('error')
-                return 0
-            }
-            openNotification('success', `Orden de trabajo registrada.\nLe hemos añadido una clave unica OT-${data[0]?.id}.`)*/
         } catch (error) {
             console.log("🚀 ~ saveAll ~ error:", error)
         } finally {
             setSubmitting(false)
-            /*setTimeout(function () {
-                //onClose()
-            }, 2222);*/
         }
     }
 
@@ -390,7 +307,6 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
             console.log("🚀 ~ saveAll ~ error:", error)
         } finally {
             setSubmitting(false)
-            //message.success('Processing complete!')
         }
     }
 
@@ -408,20 +324,15 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
     }));
     const contentStyle = {
         //lineHeight: '260px',
-        //textAlign: 'center',
         width: '100%',
         height: '475px',
-        //color: token.colorTextTertiary,
         //backgroundColor: token.colorFillAlter,
-        //backgroundColor: 'white',
         //borderRadius: token.borderRadiusLG,
         //border: `1px dashed ${token.colorBorder}`,
-        //marginTop: 16,
         overflowY: 'auto',
         padding: 8,
         display: 'flex',
         flexDirection: 'column',
-        //justifyContent: 'center',
     };
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
     function formatSize(size) {
@@ -683,8 +594,6 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                                     showUploadList={false}
                                                                     className='upload-file-item'
                                                                 >
-                                                                    {/*<h1 className='p2 th-center'>{item?.file?.name || item?.name}</h1>
-                                                                    <h1 className='p2 th-center'>{item?.file?.type || item?.type}</h1>*/}
                                                                     <CloudUploadOutlined style={{ fontSize: 34, color: '#4b9bff' }} />
                                                                     <h1 className='upload-label-title'>{item?.name}</h1>
                                                                     <h1 className='upload-label-or'>o</h1>
@@ -699,7 +608,6 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                     </div>
                                                     <div className="upload-file-container">
                                                         {fileList.map((item, index) => {
-                                                            //console.log("🚀 ~ {fileList.map ~ item:", item)
                                                             return (
                                                                 <div className='upload-file-item-2'>
                                                                     {item?.file?.name &&
@@ -716,50 +624,9 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                             )
                                                         })}
                                                     </div>
-                                                    {/*<div className="tabla">
-                                                        <div className="contenido table-scroll">
-                                                            <table>
-                                                                <thead className="header-routes bg-gray">
-                                                                    <tr>
-                                                                        <th style={{ width: '5%', backgroundColor: '#e2e2e2' }} className={`bg-gray sticky-left p5 th-center`}>#</th>
-                                                                        <th style={{ width: '50%', backgroundColor: '#e2e2e2' }} className='th-center p5'>NOMBRE</th>
-                                                                        <th style={{ backgroundColor: '#e2e2e2' }} className='th-center p5'>TIPO</th>
-                                                                        <th style={{ backgroundColor: '#e2e2e2' }}></th>
-                                                                    </tr>
-                                                                </thead>
-
-                                                                <tbody className="droppable-container">
-                                                                    {fileList.map((item, index) => {
-                                                                        return (
-                                                                            <tr>
-                                                                                <td style={{ backgroundColor: '#e2e2e2' }} className={`sticky-left th-center p2`}>{index + 1}</td>
-                                                                                <td className='p2 th-center'>{item?.file?.name || item?.name}</td>
-                                                                                <td className='p2 th-center'>{item?.file?.type || item?.type}</td>
-                                                                                <td className='th-center p2'>
-                                                                                    <Upload
-                                                                                        maxCount={1}
-                                                                                        accept={item.type === "XML" ? ".xml" : ".pdf"}
-                                                                                        beforeUpload={(file) => {
-                                                                                            handleUploadChange(file, index);
-                                                                                            return false;
-                                                                                        }}
-                                                                                        fileList={item.file ? [item.file] : []}
-                                                                                        showUploadList={false}
-                                                                                    >
-                                                                                        <Button icon={<UploadOutlined />} />
-                                                                                    </Upload>
-                                                                                </td>
-                                                                            </tr>
-                                                                        )
-                                                                    })}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>*/}
                                                 </Stack>
                                             </div>
                                         }
-                                        {/*  */}
                                         {current == 2 &&
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 15, padding: '25px 50px' }}>
                                                 <Descriptions
@@ -778,259 +645,15 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                         }
                                     </div>
                                 </div>
-                                {/*panel == 'one' &&
-                                    <div className='tab-panel'>
-                                        <Stack direction='row' className='form-field' spacing={4}>
-                                            <Field name='date_out' validate={validate}>
-                                                {({ field, form }) => (
-                                                    <FormControl isInvalid={form.errors.date_out && form.touched.date_out}>
-                                                        <FormLabel>
-                                                            <h1 className='form-label requeried'>Fecha de viaje</h1>
-                                                        </FormLabel>
-                                                        <Input
-                                                            {...field}
-                                                            size='sm'
-                                                            type='date'
-                                                            min={yesterday}
-                                                            value={selectedDate}
-                                                            onChange={(e) => {
-                                                                setSelectedDate(e.target.value);
-                                                                form.setFieldValue('date_out', e.target.value);
-                                                            }}
-                                                        />
-                                                        {form.errors.date_out && <h1 className='form-error'>{form.errors.date_out}</h1>}
-                                                    </FormControl>
-                                                )}
-                                            </Field>
-                                            <FormControl isInvalid={props.errors.id_route && props.touched.id_route}>
-                                                <FormLabel>
-                                                    <h1 className="form-label requeried">Ruta predefinida</h1>
-                                                </FormLabel>
-                                                <Field size='sm' name="id_route" validate={validate}>
-                                                    {({ field }) => (
-                                                        <Select
-                                                            {...field}
-                                                            placeholder="Seleccionar"
-                                                            onChange={(e) => {
-                                                                props.setFieldValue('id_route', e.target.value);
-                                                                setRouteSeleccionado(e.target.value);
-                                                            }}
-                                                            size='sm'
-                                                        >
-                                                            {routes.map((item, index) => (
-                                                                <option
-                                                                    key={`option-routes-event-${item?.id}-${index}`}
-                                                                    value={item?.id}
-                                                                >
-                                                                    {item?.name} | {item?.description}
-                                                                </option>
-                                                            ))}
-                                                        </Select>
-                                                    )}
-                                                </Field>
-                                            </FormControl>
-                                        </Stack>
-                                        <h1>{selectedDate}</h1>
-                                        <Stack direction='row' className='form-field' spacing={4}>
-                                            <FormControl isInvalid={props.errors.id_truck && props.touched.id_truck}>
-                                                <FormLabel>
-                                                    <h1 className='form-label requeried'>Vehículo</h1>
-                                                </FormLabel>
-                                                <Field size='sm' as={Select} name="id_truck" placeholder="Seleccionar" validate={validate}>
-                                                    {trucks.map((item, index) => (
-                                                        <option key={`option-trucks-event-${item?.id}-${index}`} value={item?.id}>
-                                                            {item?.no_econ} | {item?.brand} | {item?.model}
-                                                        </option>
-                                                    ))}
-                                                </Field>
-                                                {props.errors.id_truck && <h1 className='form-error'>{props.errors.id_truck}</h1>}
-                                            </FormControl>
-                                            <FormControl isInvalid={props.errors.id_user && props.touched.id_user}>
-                                                <FormLabel>
-                                                    <h1 className='form-label requeried'>Asignado a</h1>
-                                                </FormLabel>
-                                                <Field size='sm' as={Select} name="id_user" placeholder="Seleccionar" validate={validate}>
-                                                    {drivers.map((item, index) => (
-                                                        <option key={`option-drivers-event-${item?.id}-${index}`} value={item?.id}>
-                                                            {item?.name} {item?.last_name} | {item?.no_econ}
-                                                        </option>
-                                                    ))}
-                                                </Field>
-                                                {props.errors.id_user && <h1 className='form-error'>{props.errors.id_user}</h1>}
-                                                <h1 className='form-helper'>Solo usuarios con rol de Conductor</h1>
-                                            </FormControl>
-                                        </Stack>
-                                        {route_seleccionado &&
-                                            <Stack mt={2}>
-                                                <h1 className='title-card-form-no-space'>Resumen de costos</h1>
-                                                <HStack align='center' justifyContent='space-between' direction='row'>
-                                                    <h1 className='smaller'>Costo aprox.</h1>
-                                                    <h1 className='smaller right'>$ {getCurrencyMoney(selectedRoute?.cost)}</h1>
-                                                </HStack>
-                                                <HStack align='center' justifyContent='space-between' direction='row'>
-                                                    <h1 className='smaller'>Gasolina</h1>
-                                                    <Field name='gasoline'>
-                                                        {({ field, form }) => (
-                                                            <FormControl>
-                                                                <NumberInput size='sm' defaultValue={field.value}>
-                                                                    <NumberInputField {...field} placeholder='Cantidad' />
-                                                                    <NumberInputStepper>
-                                                                        <NumberIncrementStepper />
-                                                                        <NumberDecrementStepper />
-                                                                    </NumberInputStepper>
-                                                                </NumberInput>
-                                                            </FormControl>
-                                                        )}
-                                                    </Field>
-                                                </HStack>
-                                                <HStack align='center' justifyContent='space-between' direction='row'>
-                                                    <h1 className='smaller'>Casetas</h1>
-                                                    <Field name='stand'>
-                                                        {({ field, form }) => (
-                                                            <FormControl>
-                                                                <NumberInput size='sm' defaultValue={field.value}>
-                                                                    <NumberInputField {...field} placeholder='Cantidad' />
-                                                                    <NumberInputStepper>
-                                                                        <NumberIncrementStepper />
-                                                                        <NumberDecrementStepper />
-                                                                    </NumberInputStepper>
-                                                                </NumberInput>
-                                                            </FormControl>
-                                                        )}
-                                                    </Field>
-                                                </HStack>
-                                                <HStack align='center' justifyContent='space-between' direction='row'>
-                                                    <h1 className='smaller'>Operador (sueldo)</h1>
-                                                    <Field name='operator'>
-                                                        {({ field, form }) => (
-                                                            <FormControl>
-                                                                <NumberInput size='sm' defaultValue={field.value}>
-                                                                    <NumberInputField {...field} placeholder='Cantidad' />
-                                                                    <NumberInputStepper>
-                                                                        <NumberIncrementStepper />
-                                                                        <NumberDecrementStepper />
-                                                                    </NumberInputStepper>
-                                                                </NumberInput>
-                                                            </FormControl>
-                                                        )}
-                                                    </Field>
-                                                </HStack>
-                                                <HStack align='center' justifyContent='space-between' direction='row'>
-                                                    <h1 className='smaller'>Otros gastos</h1>
-                                                    <Field name='cost'>
-                                                        {({ field, form }) => (
-                                                            <FormControl>
-                                                                <NumberInput size='sm' defaultValue={field.value}>
-                                                                    <NumberInputField {...field} placeholder='Cantidad' />
-                                                                    <NumberInputStepper>
-                                                                        <NumberIncrementStepper />
-                                                                        <NumberDecrementStepper />
-                                                                    </NumberInputStepper>
-                                                                </NumberInput>
-                                                            </FormControl>
-                                                        )}
-                                                    </Field>
-                                                </HStack>
-                                                <HStack align='center' justifyContent='space-between' direction='row' mb={2}>
-                                                    <h1 className='smaller'>Costo total</h1>
-                                                    <h1 className='smaller right'>$ {getCurrencyMoney(selectedRoute?.cost + parseFloat(props?.values?.cost || 0) + parseFloat(props?.values?.gasoline || 0) + parseFloat(props?.values?.stand || 0) + parseFloat(props?.values?.operator || 0))}</h1>
-                                                </HStack>
-                                            </Stack>
-                                        }
-                                    </div>
-                                */}
-
-                                {/*panel == 'two' &&
-                                    <div className='tab-panel'>
-                                        <Stack mt={2}>
-                                            <h1 className='title-card-form-no-space'>Documentos</h1>
-                                            <div className="tabla">
-                                                <div className="contenido table-scroll">
-                                                    <table>
-                                                        <thead className="header-routes bg-gray">
-                                                            <tr>
-                                                                <th style={{ width: '5%', backgroundColor: '#e2e2e2' }} className={`bg-gray sticky-left p5 th-center`}>#</th>
-                                                                <th style={{ width: '50%', backgroundColor: '#e2e2e2' }} className='th-center p5'>NOMBRE</th>
-                                                                <th style={{ backgroundColor: '#e2e2e2' }} className='th-center p5'>TIPO</th>
-                                                                <th style={{ backgroundColor: '#e2e2e2' }}></th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody className="droppable-container">
-                                                            {fileList.map((item, index) => {
-                                                                //console.log("🚀 ~ {fileList.map ~ item:", item)
-                                                                return (
-                                                                    <tr>
-                                                                        <td style={{ backgroundColor: '#e2e2e2' }} className={`sticky-left th-center p2`}>{index + 1}</td>
-                                                                        <td className='p2 th-center'>{item?.file?.name || item?.name}</td>
-                                                                        <td className='p2 th-center'>{item?.file?.type || item?.type}</td>
-                                                                        <td className='th-center p2'>
-                                                                            <Upload
-                                                                                maxCount={1}
-                                                                                accept={item.type === "XML" ? ".xml" : ".pdf"}
-                                                                                beforeUpload={(file) => {
-                                                                                    handleUploadChange(file, index);
-                                                                                    return false;
-                                                                                }}
-                                                                                fileList={item.file ? [item.file] : []}
-                                                                                showUploadList={false}
-                                                                            >
-                                                                                <Button icon={<UploadOutlined />} />
-                                                                            </Upload>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                            })}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </Stack>
-                                    </div>
-                                */}
-
-                                {/*panel == 'three' &&
-                                    <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />
-                                */}
-
-                                {/** invoiceData */}
 
                             </ModalBody>
                             <Divider mt={3} />
                             <ModalFooter style={styles['content-btn-modal-footer']}>
                                 <Button type="link" disabled={isSubmitting} onClick={() => { /*setUpList(true);*/ onClose(); }}>Cerrar</Button>
                                 <div style={{ display: 'flex', flexDirection: 'row', gap: 5 }}>
-                                    {/*panel == 'one' &&
-                                        <Button
-                                            type="primary"
-                                            //isLoading={isSubmitting}
-                                            isDisabled={!props?.values?.id_user || !props?.values?.id_route || !props?.values?.id_truck}
-                                            onClick={() => props.submitForm()}
-                                        >
-                                            Siguiente
-                                        </Button>
-                                    }
-                                    {panel == 'two' &&
-                                        <>
-                                            <Button type="link" disabled={isSubmitting} onClick={() => setPanel('one')}>Anterior</Button>
-                                            <Button type="primary" loading={isSubmitting} disabled={isSubmitting} onClick={saveAll}>Siguiente</Button>
-                                        </>
-                                    }
-                                    {panel == 'three' &&
-                                        <>
-                                            <Button type="link" disabled={isSubmitting} onClick={() => setPanel('two')}>Anterior</Button>
-                                            <Button type="primary" loading={isSubmitting} disabled={isSubmitting} onClick={saveAll}>
-                                                Guardar
-                                            </Button>
-                                        </>
-                                    */}
-
-
                                     {current > 0 && (
                                         <Button
-                                            style={{
-                                                margin: '0 8px',
-                                            }}
+                                            style={{ margin: '0 8px'}}
                                             onClick={() => prev()}
                                         >
                                             Anterior
@@ -1041,12 +664,8 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                             type="primary"
                                             isDisabled={!props?.values?.id_user || !props?.values?.id_route || !props?.values?.id_truck || !isSubmitting}
                                             onClick={() => {
-                                                if (current == 0) {
-                                                    props.submitForm()
-                                                } else {
-                                                    //next()
-                                                    saveAll()
-                                                }
+                                                if (current == 0) props.submitForm()
+                                                else saveAll()
                                             }}
                                         >
                                             Siguiente

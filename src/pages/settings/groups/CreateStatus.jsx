@@ -15,7 +15,6 @@ import {
     ModalCloseButton,
 } from '@chakra-ui/react'
 import '../../../assets/styles/truck.css'
-import ColorPicker from 'react-pick-color';
 
 const openNotificationWithIcon = (api, type, description) => {
     api[type]({
@@ -24,7 +23,7 @@ const openNotificationWithIcon = (api, type, description) => {
     });
 };
 
-const CreateStatus = ({ onClose, item, setUpList, data }) => {
+const CreateStatus = ({ onClose, item, setUpList, data, company_id }) => {
 
     const [errors, setErrors] = useState(false)
     const [isSubmitting, setSubmitting] = useState(false)
@@ -33,33 +32,37 @@ const CreateStatus = ({ onClose, item, setUpList, data }) => {
     let error = 'Campo requerido';
     const validate = (value) => !value && error;
 
-    const [color, setColor] = useState('');
-
     return (
         <Formik
-            initialValues={{
-                name: `${item?.name || ""}`,
-                color: `${item?.color || ""}`,
-            }}
+            initialValues={{ name: `${item?.name || ""}` }}
             onSubmit={async (values) => {
                 try {
                     setSubmitting(true)
                     console.log(values)
                     const newValues = {
-                        ...values,
-                        color: color || values?.color
+                        ...values
                     }
-                    const colors = data.filter((item_) => item_?.color !== item?.color).map((item_) => item_?.color); 
                     const names = data.filter((item_) => item_?.name !== item?.name).map((item_) => item_?.name);
-                    if (colors.includes(newValues.color) || names.includes(newValues.name)) {
-                        openNotification('warning', 'Distintivo / Nombre repetido')
+                    if (names.includes(newValues.name)) {
+                        openNotification('warning', 'Nombre repetido')
                         return 0
                     }
                     setErrors(false)
                     if (item?.id) {
-                        const { data, error } = await supabase.from('status').update({ ...newValues }).eq('id', item?.id).select();
+                        const { data, error } = await supabase.from('groups').update({ ...newValues }).eq('id', item?.id).select();
+                        console.log("🚀 ~ error:", error)
+                        console.log("🚀 ~ onSubmit={ ~ data:", data)
                         if (!error) {
                             openNotification('success', `${newValues?.name} ha sido actualizado`)
+                            setUpList(true)
+                            setErrors(true)
+                        } else openNotification('error')
+                    } else {
+                        const { data, error } = await supabase.from('groups').insert([{ ...newValues, company_id: company_id }]).select()
+                        console.log("🚀 ~ error:", error)
+                        console.log("🚀 ~ data:", data)
+                        if (!error) {
+                            openNotification('success', `${newValues?.name} ha sido creado`)
                             setUpList(true)
                             setErrors(true)
                         } else openNotification('error')
@@ -93,13 +96,6 @@ const CreateStatus = ({ onClose, item, setUpList, data }) => {
                                             )}
                                         </Field>
                                     </Stack>
-                                    <Stack direction='column' className='form-field'>
-                                        <h1 className='form-label requeried'>Distintivo</h1>
-                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                            <ColorPicker color={props.values?.color} onChange={color => setColor(color.hex)} />
-                                        </div>
-                                    </Stack>
-
                                 </div>
                             </ModalBody>
                             <Divider mt={3} />

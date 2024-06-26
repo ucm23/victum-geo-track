@@ -15,6 +15,20 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Avatar, List, Button } from "antd";
 import { useSelector } from 'react-redux';
 
+import {
+    Menu as Menus,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuItemOption,
+    MenuGroup,
+    MenuOptionGroup,
+    MenuDivider,
+    Button as ButtonUI
+} from '@chakra-ui/react'
+import { PhoneIcon, HamburgerIcon, AddIcon, ExternalLinkIcon, RepeatIcon, EditIcon } from '@chakra-ui/icons'
+import LabelProfile from './LabelProfile';
+
 const { Header, Content, Sider } = Layout;
 
 const menu = [
@@ -94,7 +108,7 @@ const menu_cog = [
         label: 'Grupos',
         route: '/groups'
     },
-    
+
 ]
 
 const menu_cog_2 = [
@@ -175,7 +189,7 @@ const NavBar = ({ children }) => {
                                 </div>
                             </div> :
                             <div className='div-header-3'>
-                                <List
+                                {/*<List
                                     itemLayout="horizontal"
                                     dataSource={[{ title: 'Configuración' }]}
                                     style={{}}
@@ -198,7 +212,14 @@ const NavBar = ({ children }) => {
                                             />
                                         </List.Item>
                                     )}
+                                />*/}
+                                <LabelProfile
+                                    information_user={information_user}
+                                    company={company}
+                                    collapsed={collapsed}
+                                    signOut={signOut}
                                 />
+
                                 <Divider />
                             </div>
                         }
