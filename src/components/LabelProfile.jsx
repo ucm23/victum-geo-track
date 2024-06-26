@@ -55,7 +55,7 @@ const LabelProfile = ({ information_user, company, collapsed, signOut }) => {
                 <MenuItem icon={<UserOutlined />}>
                     Inicio de sesión
                 </MenuItem>
-                <MenuItem icon={<LogoutOutlined />} command='⌘E'>
+                <MenuItem /*href='#'*/ onClick={() => signOut()} icon={<LogoutOutlined />} command='⌘E'>
                     Salir
                 </MenuItem>
             </MenuList>
