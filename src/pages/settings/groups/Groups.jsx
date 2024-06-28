@@ -45,8 +45,9 @@ const Groups = ({ }) => {
             setLoader(false)
             let response = plate
                 ? await supabase.from('groups').select("*").eq('company_id', company_id).ilike('name', `%${plate}%`)
-                : await supabase.rpc('_get_groups_ordered_by_id', { _company_id_: company_id });
+                : await supabase.rpc('_get_groups_ordered_by_id_count_', { _company_id_: company_id });
             const { data, error } = response;
+            console.log("🚀 ~ getTodos ~ data:", data)
             if (error) return;
             setData(data || []);
         } catch (error) {
@@ -62,27 +63,40 @@ const Groups = ({ }) => {
         onOpen()
     };
 
-    const deleteItem = async ({ id }) => {
+    const deleteItem = async ({ id, trucks }) => {
+        if (trucks) {
+            openNotificationWithIcon(api, 'warning', 'Existen vehículos con esta clasificación, no se pueden eliminar.')
+            return
+        }
         const { error } = await supabase.from('groups').delete().eq('id', id);
-        console.log("🚀 ~ deleteItem ~ error:", error)
+        /*if (error?.code == '23503') {
+            
+        }*/
         if (error) openNotificationWithIcon(api, 'error')
         else getTodos()
     }
+
+    const count = {
+        0: 's',
+        1: ''
+    }
+    const getCount = (trucks) => count[trucks] ?? 's'
 
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className='tr-simple'>
                 <td className='tr-simple-align-left-1'>{index + 1}</td>
                 <td>{item?.name}</td>
+                <td className='tr-simple-align-left th-center'>{item?.trucks} vehículo{getCount(item?.trucks)}</td>
                 <td className='tr-simple-align-left th-center'>
                     <a onClick={() => handleUpdateItem({ item })} className="table-column-logo"><EditOutlined /></a>
-                    <a onClick={() => deleteItem({ id: item?.id })} className="table-column-logo"><DeleteOutlined /></a>
+                    <a onClick={() => deleteItem({ id: item?.id, trucks: item?.trucks })} className="table-column-logo"><DeleteOutlined /></a>
                 </td>
             </tr>
         );
     };
 
-    const th_ = ['#', `ETIQUETA`, 'Acciones']
+    const th_ = ['#', `ETIQUETA`, `OCUPACIÓN`, 'Acciones']
 
     return (
         <Layout className='content-layout'>

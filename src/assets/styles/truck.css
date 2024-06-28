@@ -99,7 +99,7 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 300px;
-  border-bottom: 0.01px solid white;
+  border-bottom: 0.01px solid #eff0f1;
   border-collapse: collapse;
   font-size: 11px;
 }
@@ -221,7 +221,7 @@ span.chakra-badge.chakra-badge-label-page {
 }
 
 .table-bg-by-index {
-  box-shadow: 0 1.5px 0 0 #7979792b;
+  /*box-shadow: 0 1.5px 0 0 #7979792b;*/
 }
 
 .load-less-left {
@@ -486,10 +486,12 @@ span.ant-upload {
 }
 
 td {
-  border-bottom: 0px solid white;
+  /*border-bottom: 0px solid white;*/
 }
 
-.tr-simple-fill-1 {}
+.tr-simple-fill-1 {
+
+}
 
 .tr-simple-align-left {
   width: 60px;
@@ -531,4 +533,9 @@ td {
   flex-direction: column;
   align-items: center;
   padding: 12px 0;
+}
+
+:where(.css-dev-only-do-not-override-17seli4).ant-space-compact-block {
+  display: flex;
+  width: auto;
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../../assets/styles/calendars.css'
 import '../../assets/styles/truck.css'
-import HeaderTitle from '../../components/HeaderTitle';
+import HeaderCalendar from '../../components/HeaderCalendar';
 import { supabase } from '../../utils/supabase';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from '../../utils/moment-config';
@@ -16,7 +16,12 @@ import {
 import CreateEventModal from './CreateEventModal';
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
+import { message } from 'antd';
 const { Content } = Layout;
+
+import * as XLSX from 'xlsx';
+
+
 
 const Calendars = ({ }) => {
 
@@ -107,12 +112,24 @@ const Calendars = ({ }) => {
         });
     };
 
+    const exportToExcel = () => {
+        message.info('Un momento, generando reporte...');
+        // Crear una hoja de trabajo a partir de los datos
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+        // Generar el archivo Excel y desencadenar la descarga
+        XLSX.writeFile(workbook, "Datos.xlsx");
+    };
+
     return (
         <Layout className='content-layout'>
             <Content style={{ backgroundColor: 'white' }}>
-                <HeaderTitle
+                <HeaderCalendar
                     title={'Órdenes de trabajo'}
                     handle={handleUpdateItem}
+                    exportToExcel={exportToExcel}
                 />
                 <Divider />
                 <div className="calendar-container">

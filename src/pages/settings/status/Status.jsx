@@ -57,14 +57,14 @@ const Status = ({ }) => {
 
     const handleUpdateItem = ({ item, mode }) => {
         setItem(item || {})
-        if(mode) onOpen(); else onOpen1();
+        if (mode) onOpen(); else onOpen1();
     };
 
     const renderItem = ({ item, index }) => {
         return (
             <tr key={index} className='tr-simple'>
-                <td className='tr-simple-align-left-1'>{index+1}</td>
-                <td><Badge color={item?.color} text=' '/>{item?.name}</td>
+                <td className='tr-simple-align-left-1'>{index + 1}</td>
+                <td><Badge color={item?.color} text=' ' />{item?.name}</td>
                 <td className='tr-simple-align-left th-center'>
                     <a onClick={() => handleUpdateItem({ item, mode: true })} className="table-column-logo"><EditOutlined /></a>
                     <a onClick={() => handleUpdateItem({ item, mode: false })} className="table-column-logo"><DragOutlined /></a>
@@ -73,7 +73,7 @@ const Status = ({ }) => {
         );
     };
 
-    const th_ = ['#', `ETIQUETA`, 'Acciones']
+    const th_ = ['#', `ETIQUETA`, 'Acciones'];
 
     return (
         <Layout className='content-layout'>
@@ -92,22 +92,22 @@ const Status = ({ }) => {
                         <Divider />
                         {loader ?
                             <div>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                {th_.map((item, index) => <td key={`td-status-${item}-${index}`}><strong>{item}</strong></td>)}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.map((item, index) => renderItem({ item, index }))}
-                                        </tbody>
-                                    </table>
-                                    {!data.length && <ListEmpty explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'} />}
-                            </div> : 
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            {th_.map((item, index) => <td key={`td-status-${item}-${index}`}><strong>{item}</strong></td>)}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item, index) => renderItem({ item, index }))}
+                                    </tbody>
+                                </table>
+                                {!data.length && <ListEmpty explication={'Da click sobre el botón AGREGAR para registrar tus vehículos'} />}
+                            </div> :
                             <div style={{ padding: 35 }}>
                                 <LoaderList />
-                                </div>
-                            }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

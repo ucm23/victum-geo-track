@@ -49,13 +49,6 @@
   box-shadow: 0 0.4px 0 0 #7979792b;
 }
 
-.sticky-left {
-  position: sticky;
-  left: 0;
-  background-color: #fff;
-  z-index: 1;
-}
-
 .bg-80 {
   background-color: #eff0f1;
 }
@@ -104,11 +97,6 @@ table {
   flex-direction: row;
   align-items: center;
 }
-
-.th-center {
-  text-align: center;
-}
-
 
 .center-loader {
   height: 100%;
@@ -218,7 +206,7 @@ span.chakra-badge.chakra-badge-label-page {
 }
 
 .table-bg-by-index {
-  box-shadow: 0 1.5px 0 0 #7979792b;
+  /*box-shadow: 0 1.5px 0 0 #7979792b;*/
 }
 
 .load-less-left {

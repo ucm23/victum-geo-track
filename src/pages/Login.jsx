@@ -46,6 +46,7 @@ function Login({ openSession }) {
             return;
         }
         const { data: user_ } = await supabase.from('user').select(`*, company:company_id (*)`).eq('email', data?.email.trim()).eq('password', data?.password.trim());
+        //console.log("🚀 ~ handleLogin ~ user_:", user_)
         if (user_[0]) {
             openSession('OPEN_', user_[0])
             openNotification('success')

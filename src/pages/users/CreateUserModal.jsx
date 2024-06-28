@@ -174,6 +174,8 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
                                                     props.handleChange(e);
                                                     setSelectedValue(e.target.value);
                                                 }}
+                                                isDisabled={item?.id}
+
                                             >
                                                 {groups.map((item, index) => (
                                                     <option key={`option-groups-${item?.id}-${index}`} value={item?.id}>
@@ -191,13 +193,14 @@ const CreateUserModal = ({ company_id, onClose, item, setUpList }) => {
                                                     <FormLabel>
                                                         <h1 className='form-label requeried'>Número de teléfono</h1>
                                                     </FormLabel>
-                                                    <Input {...field} />
+                                                    <Input {...field} maxLength={10} />
                                                     {form.errors.phone_number && <h1 className='form-error'>{form.errors.phone_number}</h1>}
+                                                    <h1 className='form-helper'>A 10 dígitos</h1>
                                                 </FormControl>
                                             )}
                                         </Field>
                                     </Stack>
-                                    {!cant_drive?.can_drive &&
+                                    {(!cant_drive?.can_drive || item?.admin) &&
                                         <Stack className='form-field'>
                                             <Field name='email' validate={validate}>
                                                 {({ field, form }) => (

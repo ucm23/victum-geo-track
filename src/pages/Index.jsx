@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import LoaderList from '../components/LoaderList';
-import { HStack, Stack } from '@chakra-ui/react';
+//import { HStack, Stack } from '@chakra-ui/react';
 import { Wrap, WrapItem } from '@chakra-ui/react'
 import StatContent from '../components/StatContent'
 import { supabase } from '../utils/supabase';
-import { useBreakpointValue } from '@chakra-ui/react'
+//import { useBreakpointValue } from '@chakra-ui/react'
 
 const Index = ({ }) => {
 
     const information_user = useSelector(state => state.login.information_user);
     const { company_id } = information_user;
     const [loader, setLoader] = useState(false);
-    const mobile = useBreakpointValue({ base: true, md: false });
+    //const mobile = useBreakpointValue({ base: true, md: false });
     const [users, setusers] = useState(0);
     const [trucks, setTrucks] = useState(0);
     const [invoices, setInvoices] = useState(0);

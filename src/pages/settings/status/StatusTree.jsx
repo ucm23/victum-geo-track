@@ -12,17 +12,17 @@ import {
 } from '@chakra-ui/react'
 import '../../../assets/styles/truck.css'
 
-const openNotificationWithIcon = (api, type, description) => {
+/*const openNotificationWithIcon = (api, type, description) => {
     api[type]({
         message: messagesNotificationTruck[type].message,
         description: messagesNotificationTruck[type].description || description,
     });
-};
+};*/
 
 const StatusTree = ({ company_id, onClose, item, setUpList, data }) => {
 
-    const [isSubmitting, setSubmitting] = useState(false)
-    const [api, contextHolder] = notification.useNotification();
+    //const [isSubmitting, setSubmitting] = useState(false)
+    //const [api, contextHolder] = notification.useNotification();
     //const openNotification = (type, description) => openNotificationWithIcon(api, type, description)
 
     const [selectedKeys, setSelectedKeys] = useState(item?.states);
@@ -30,12 +30,13 @@ const StatusTree = ({ company_id, onClose, item, setUpList, data }) => {
 
     useEffect(() => {
         //const children = data.filter((item_) => item_?.id !== item?.id);
+        console.log("🚀 ~ useEffect ~ item:", item)
         setDataFormatted([
             {
-                title: item.name,
+                title: item?.name,
                 key: '0',
                 children: data.filter((item_) => item_?.id !== item?.id).map((item, index) => ({
-                    title: item.name,
+                    title: item?.name,
                     key: `${index + 1}`
                 }))
             }
@@ -46,7 +47,7 @@ const StatusTree = ({ company_id, onClose, item, setUpList, data }) => {
 
     return (
         <Formik
-            initialValues={{ }}
+            initialValues={{}}
             onSubmit={async () => {
                 /*try {
                     setSubmitting(true)
@@ -71,7 +72,7 @@ const StatusTree = ({ company_id, onClose, item, setUpList, data }) => {
                 return (
                     <Form>
                         <div>
-                            {contextHolder}
+                            {/*contextHolder*/}
                             <ModalHeader>Estado</ModalHeader>
                             <ModalCloseButton />
                             <Divider />

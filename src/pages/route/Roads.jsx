@@ -76,6 +76,7 @@ const Roads = ({ }) => {
 
     const getTodos = async () => {
         try {
+            console.log("🚀 ~")
             setLoader(false)
             let { data, error } = await supabase.rpc('get_routes_by_company_', { _company_id: company_id, _page: page, _page_size: pageSize });
             if (error) return;
@@ -105,8 +106,8 @@ const Roads = ({ }) => {
         return (
             <tr key={index} className={'table-bg-by-index'}>
                 <th className="sticky-left">{index + 1 + currentPage}</th>
-                <td>{item?.name}</td>
-                <th>{item?.description}</th>
+                <th>{item?.name}</th>
+                <td>{item?.description}</td>
                 <td className='th-center'>$ {getCurrencyMoney(item?.cost)}</td>
                 <td>
                     <Dropdown menu={{

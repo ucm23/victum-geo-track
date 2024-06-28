@@ -44,7 +44,7 @@ const General = ({ }) => {
     const [upList, setUpList] = useState(false);
 
     useEffect(() => {
-        console.log("🚀 ~ General ~ information_user:", information_user)
+        //console.log("🚀 ~ General ~ information_user:", information_user)
         //getTodos();
     }, [plate, upList, company_id]);
 
@@ -137,7 +137,7 @@ const General = ({ }) => {
                                                         <FormLabel>
                                                             <h1 className='form-label requeried'>Nombre</h1>
                                                         </FormLabel>
-                                                        <Input {...field} />
+                                                        <Input {...field} disabled />
                                                         {form.errors.name && <h1 className='form-error'>{form.errors.name}</h1>}
                                                     </FormControl>
                                                 )}
@@ -150,7 +150,7 @@ const General = ({ }) => {
                                                         <FormLabel>
                                                             <h1 className='form-label'>Dirección</h1>
                                                         </FormLabel>
-                                                        <Input {...field} />
+                                                        <Input {...field} disabled />
                                                         {form.errors.residence && <h1 className='form-error'>{form.errors.residence}</h1>}
                                                     </FormControl>
                                                 )}
@@ -163,7 +163,7 @@ const General = ({ }) => {
                                                         <FormLabel>
                                                             <h1 className='form-label'>Código postal</h1>
                                                         </FormLabel>
-                                                        <Input {...field} />
+                                                        <Input {...field} disabled />
                                                         {form.errors.postal_code && <h1 className='form-error'>{form.errors.postal_code}</h1>}
                                                     </FormControl>
                                                 )}

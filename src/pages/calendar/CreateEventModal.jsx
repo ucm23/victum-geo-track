@@ -455,10 +455,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                                     size='sm'
                                                                 >
                                                                     {routes.map((item, index) => (
-                                                                        <option
-                                                                            key={`option-routes-event-${item?.id}-${index}`}
-                                                                            value={item?.id}
-                                                                        >
+                                                                        <option key={`ore-${item?.id}-${index}`} value={item?.id}>
                                                                             {item?.name} | {item?.description}
                                                                         </option>
                                                                     ))}
