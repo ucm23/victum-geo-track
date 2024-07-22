@@ -17,11 +17,9 @@ import CreateEventModal from './CreateEventModal';
 import { useSelector } from 'react-redux';
 import { Layout } from 'antd';
 import { message } from 'antd';
-const { Content } = Layout;
-
 import * as XLSX from 'xlsx';
 
-
+const { Content } = Layout;
 
 const Calendars = ({ }) => {
 
@@ -114,12 +112,9 @@ const Calendars = ({ }) => {
 
     const exportToExcel = () => {
         message.info('Un momento, generando reporte...');
-        // Crear una hoja de trabajo a partir de los datos
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-        // Generar el archivo Excel y desencadenar la descarga
         XLSX.writeFile(workbook, "Datos.xlsx");
     };
 

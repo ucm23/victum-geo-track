@@ -1,5 +1,5 @@
 import { LikeOutlined } from '@ant-design/icons';
-import { Wrap, WrapItem } from '@chakra-ui/react'
+//import { Wrap, WrapItem } from '@chakra-ui/react'
 import { useBreakpointValue } from '@chakra-ui/react'
 
 export default function StatContent({ title, count, label }) {

@@ -297,3 +297,7 @@ ul.chakra-wrap__list.css-19lo6pj {
   width: 100%;
   justify-content: space-between;
 }
+
+.p-left {
+  padding-left: 36px;
+}

@@ -489,9 +489,7 @@ td {
   /*border-bottom: 0px solid white;*/
 }
 
-.tr-simple-fill-1 {
-
-}
+.tr-simple-fill-1 {}
 
 .tr-simple-align-left {
   width: 60px;
@@ -538,4 +536,27 @@ td {
 :where(.css-dev-only-do-not-override-17seli4).ant-space-compact-block {
   display: flex;
   width: auto;
+}
+
+.width-hstack {
+  width: -webkit-fill-available;
+}
+
+.input_flt {
+  padding: 4px;
+  padding-left: 6px;
+}
+
+input.input_flt {
+  padding: 3.5px;
+  padding-left: 5px;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.color-b6 {
+  color: #B6B6B690;
+  background-color: #B6B6B610;
 }

@@ -4,7 +4,6 @@ import '../../assets/styles/road.css'
 import {
     Card,
     Button as ButtonChakra,
-    useNumberInput,
     Tabs,
     TabList,
     Tab,
@@ -19,7 +18,7 @@ import {
 import { supabase } from '../../utils/supabase';
 import { getCurrencyMoney } from '../../utils/moment-config';
 import { Breadcrumb, Descriptions, notification, Button, Tooltip, Checkbox, Timeline, Alert } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
 import { Field, Form, Formik } from 'formik'
@@ -37,19 +36,19 @@ const messagesNotification = {
 }
 
 const CreateEvent = ({ }) => {
-    
-    const information_user = useSelector(state => state.login.information_user);
-    const { company_id } = information_user;
 
-    const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
-    const navigate = useNavigate();
+    //const information_user = useSelector(state => state.login.information_user);
+    //const { company_id } = information_user;
+
+    //const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
+    //const navigate = useNavigate();
     const location = useLocation();
     const { item } = location.state || {};
 
     //const input = getInputProps()
     const [tabIndex, setTabIndex] = useState(0)
     const [api, contextHolder] = notification.useNotification();
-    const openNotification = (type, description) => openNotificationWithIcon(type, description)
+    //const openNotification = (type, description) => openNotificationWithIcon(type, description)
 
     const [drivers, setDrivers] = useState([]);
     const [order, setOrder] = useState([]);
@@ -58,18 +57,18 @@ const CreateEvent = ({ }) => {
     const [status, setStatus] = useState([]);
     const [files, setFiles] = useState([]);
     //const { isOpen, onOpen, onClose } = useDisclosure()
-    const [items, setItems] = useState([]);
+    //const [items, setItems] = useState([]);
     let error = 'Campo requerido';
     const validate = (value) => !value && error;
-    const [route_seleccionado, setRouteSeleccionado] = useState(null)
+    //const [route_seleccionado, setRouteSeleccionado] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    const openNotificationWithIcon = (type, description) => {
+    /*const openNotificationWithIcon = (type, description) => {
         api[type]({
             message: messagesNotification[type].message,
             description: messagesNotification[type].description || description,
         });
-    };
+    };*/
 
     const [allChecked, setAllChecked] = useState(false);
 
@@ -79,12 +78,28 @@ const CreateEvent = ({ }) => {
     }, [files]);
 
     useEffect(() => {
-        console.log("🚀 ~ item:", item)
         getDatas()
     }, []);
 
     const getDatas = async () => {
-        setFiles(item?.files)
+        let response_files = await fetch(`https://api-metrix.victum-re.online/geo_truck/travel_files?travel_id=${item?.id}`);
+        let data_files = await response_files.text();
+        let files = JSON.parse(data_files)
+        //console.log("🚀 ~ getDatas ~ files:", files)
+        const files__ = item?.files.map(i => {
+            const file = files.data.find(fi => fi?.id === i?.id )
+            return {
+                ...i,
+                ...file
+            }
+        })
+        console.log("🚀 ~ getDatas ~ files__:", files__)
+        const { data } = await supabase.from('travel').update({ files: files?.data}).eq('id', item?.id).select()
+        console.log("🚀 ~ travel_final:", data)
+        const files_ = files?.data.filter(item__ => item__?.active === true)
+        setFiles(files_)
+        console.log("🚀 ~ getDatas ~ item?.files:", item?.files)
+        console.log("🚀 ~ getDatas ~ item?.files:", files_)
         setOrder([
             {
                 key: '1',
@@ -220,7 +235,7 @@ const CreateEvent = ({ }) => {
         }
     }
 
-    const props = {}
+    //const props = {}
 
     const downloadFile = (id) => {
         const link = document.createElement('a');
@@ -237,9 +252,9 @@ const CreateEvent = ({ }) => {
         setFiles(updatedFiles);
     };
 
-    const [errors, setErrors] = useState(false)
+    //const [errors, setErrors] = useState(false)
     const [isSubmitting, setSubmitting] = useState(false)
-    const secretKey = '123-45';
+    //const secretKey = '123-45';
     const sendMessage = () => {
         const phoneNumber = drivers[2].children;
         let id = item?.id * 12345;
@@ -249,9 +264,7 @@ const CreateEvent = ({ }) => {
         window.open(whatsappURL, '_blank');
     };
 
-    if (!loading) {
-        return <LoaderList />
-    }
+    if (!loading) return <LoaderList />
 
     return (
         <div>
@@ -361,7 +374,7 @@ const CreateEvent = ({ }) => {
                                                                     <th style={{ backgroundColor: '#e2e2e2' }} className={`bg-gray sticky-left th-center`}>#</th>
                                                                     <th style={{ width: '50%', backgroundColor: '#e2e2e2' }} className='th-center'>NOMBRE</th>
                                                                     <th style={{ backgroundColor: '#e2e2e2' }} className='th-center'>ÚLTIMA ACTUALIZACIÓN</th>
-                                                                    <th style={{ backgroundColor: '#e2e2e2' }} className='th-center'>Descargar</th>
+                                                                    <th style={{ backgroundColor: '#e2e2e2' }} className='th-center'>Descargar / Reemplazar</th>
                                                                     <th style={{ backgroundColor: '#e2e2e2' }} className='th-center'>Aprobar</th>
                                                                 </tr>
                                                             </thead>
@@ -374,8 +387,9 @@ const CreateEvent = ({ }) => {
                                                                             <td style={{ backgroundColor: '#e2e2e2' }} className={`sticky-left th-center p2`}>{index + 1}</td>
                                                                             <td className='p2 th-center'>{item_?.file_name}</td>
                                                                             <td className='p2 th-center'>{moment(item_?.updated_at).format('DD-MM-YYYY h:mm:ss')}</td>
-                                                                            <td className='th-center p2'>
+                                                                            <td className='th-center p2' style={{ display: 'flex', gap: 3, justifyContent: 'center' }}>
                                                                                 <Button icon={<DownloadOutlined />} onClick={() => downloadFile(item_?.id)} />
+                                                                                <Button disabled={item?.days || item?.status < 3} icon={<UploadOutlined />} onClick={() => downloadFile(item_?.id)} />
                                                                             </td>
                                                                             <td className='p2 th-center'>
                                                                                 <Checkbox

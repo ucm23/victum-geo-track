@@ -16,6 +16,7 @@ import Roads from './pages/route/Roads';
 import Status from './pages/settings/status/Status';
 import General from './pages/settings/general/General';
 import Groups from './pages/settings/groups/Groups';
+import CreateRoad from './pages/route/CreateRoad';
 
 function App() {
 
@@ -88,6 +89,10 @@ function App() {
                             <Route
                                 path="/routes"
                                 element={<Roads />}
+                            />
+                            <Route
+                                path="/routes/create"
+                                element={<CreateRoad />}
                             />
                             <Route
                                 path="/status"
