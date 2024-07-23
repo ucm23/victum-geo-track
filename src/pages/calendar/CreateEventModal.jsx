@@ -37,25 +37,45 @@ const openNotificationWithIcon = (api, type, description) => {
 
 const steps = [
     {
+        title: 'Parámetros',
+    },
+    {
         title: 'Documentos',
     },
     {
         title: 'Ingresos',
-    }
+    },
+    {
+        title: 'Resumen',
+    },
 ];
 
 const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
 
     //const [errors, setErrors] = useState(false)
     const [isSubmitting, setSubmitting] = useState(false)
+    //const [panel, setPanel] = useState('one')
+    const [route_seleccionado, setRouteSeleccionado] = useState(null)
+    //const [dateSelect, setDateSelect] = useState(null)
+    const [selectedDate, setSelectedDate] = useState('');
+    const [yesterday, setYesterday] = useState('');
     const [api, contextHolder] = notification.useNotification();
     const openNotification = (type, description) => openNotificationWithIcon(api, type, description)
+    let error = 'Campo requerido';
+    const validate = (value) => !value && error;
+    //const today = new Date().toISOString().split('T')[0];
+
     const [checkIva, setCheckIva] = useState(true);
 
     const [checkRetIva, setCheckRetIva] = useState(true);
 
     const onChange = (e) => setCheckIva(e.target.checked);
     const onChangeRet = (e) => setCheckRetIva(e.target.checked);
+
+    //const [groups, setGroups] = useState([]);
+    const [drivers, setDrivers] = useState([]);
+    const [trucks, setTrucks] = useState([]);
+    const [routes, setRoutes] = useState([]);
     const [validePDF, setValidePDF] = useState(false);
     //const [dataPDF, setDataPDF] = useState(false);
     //const [dataXMl, setDataXMl] = useState(false);
@@ -131,6 +151,63 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
         }
     };
 
+    //const [uploading, setUploading] = useState(false);
+
+    useEffect(() => {
+        getRoutes();
+        const today = new Date();
+        today.setDate(today.getDate() /*- 1*/);
+        setYesterday(today.toISOString().split('T')[0])
+    }, [company_id]);
+
+    useEffect(() => {
+        if (selectedDate) getTasks(selectedDate);
+    }, [selectedDate]);
+
+    async function getTasks() {
+        const today = new Date(selectedDate);
+        today.setDate(today.getDate() + 1);
+        let nextDay = today.toISOString().split('T')[0];
+        let { data: travel, error } = await supabase.from('travel').select("id_truck, id_user").gte('date_out', `${selectedDate}T00:00:00`).lte('date_arrival', `${nextDay}T00:00:00`)
+
+        if (!error) {
+            const idTrucksToExclude = travel.map(item => item.id_truck);
+            console.log("🚀 ~ getTasks ~ idTrucksToExclude:", idTrucksToExclude)
+            const idUsersToExclude = travel.map(item => item.id_user);
+
+            let { data: trucks, error: truckError } = await supabase.from('truck')
+                .select('*, groups!inner(company_id)')
+                .eq('groups.company_id', company_id)
+                .not('id', 'in', `(${idTrucksToExclude.join(',')})`);
+            if (truckError) return;
+            if (trucks.length >= 0) setTrucks(trucks)
+
+            let { data: users, error: userError } = await supabase.from('user')
+                .select('*, types!inner(can_drive)')
+                .eq('types.can_drive', true)
+                .eq('company_id', company_id)
+                .not('id', 'in', `(${idUsersToExclude.join(',')})`);
+            if (userError) return;
+            if (users.length >= 0) setDrivers(users)
+        }
+            
+    }
+
+    async function getRoutes() {
+        const { data, error } = await supabase.from('routes').select('*').eq('company_id', company_id);
+        if (error) return;
+        if (data.length > 0) setRoutes(data)
+        if (item?.id_route) setRouteSeleccionado(data.find((item_) => item_?.id === item?.id_route)?.id);
+    }
+
+    function areFilesEquivalent(file1, file2) {
+        const getFileNameWithoutExtension = (fileName) => {
+            const extensionIndex = fileName.lastIndexOf('.');
+            if (extensionIndex === -1) return fileName;
+            return fileName.slice(0, extensionIndex).toLowerCase();
+        };
+        return getFileNameWithoutExtension(file1) === getFileNameWithoutExtension(file2);
+    }
 
     const saveAll = async () => {
         try {
@@ -221,6 +298,9 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                     }
                 );
                 let data = await response_pdf_.text();
+                //console.log("🚀 ~ saveAll ~ response_pdf_:", response_pdf_?.data)
+                //console.log("🚀 ~ response_pdf:", data)
+                //console.log("🚀 ~ response_pdf:", JSON.parse(data))
                 setCost(JSON.parse(data))
                 setValidePDF(false)
                 next()
@@ -398,6 +478,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
             }}
         >
             {(props) => {
+                const selectedRoute = routes.find((item) => item?.id == route_seleccionado);
                 const value_iva = !checkIva ? ((parseFloat(cost?.por_iva) / 100) * (parseFloat(cost?.flt_flete.replace(/,/g, '') || 0) + parseFloat(cost?.flt_e_dom.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_car.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_des.replace(/,/g, '') || 0) + parseFloat(cost?.flt_o_lin.replace(/,/g, '') || 0) + parseFloat(cost?.flt_rec.replace(/,/g, '') || 0) + parseFloat(cost?.flt_seg.replace(/,/g, '') || 0)))
                     : ((parseFloat(iva) / 100) * (parseFloat(cost?.flt_flete.replace(/,/g, '') || 0) + parseFloat(cost?.flt_e_dom.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_car.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_des.replace(/,/g, '') || 0) + parseFloat(cost?.flt_o_lin.replace(/,/g, '') || 0) + parseFloat(cost?.flt_rec.replace(/,/g, '') || 0) + parseFloat(cost?.flt_seg.replace(/,/g, '') || 0)));
                 const value_retiva = !checkRetIva ? ((parseFloat(cost?.por_ret_iva) / 100) * (parseFloat(cost?.flt_flete.replace(/,/g, '') || 0) + parseFloat(cost?.flt_e_dom.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_car.replace(/,/g, '') || 0) + parseFloat(cost?.flt_m_des.replace(/,/g, '') || 0) + parseFloat(cost?.flt_o_lin.replace(/,/g, '') || 0) + parseFloat(cost?.flt_rec.replace(/,/g, '') || 0) + parseFloat(cost?.flt_seg.replace(/,/g, '') || 0)))
@@ -421,6 +502,164 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                 <div style={{ display: 'flex', flexDirection: 'column', /*alignItems: 'center'*/ }}>
                                     <Steps style={{ padding: '0px 72px 6px' }} /*direction="vertical"*/ size="small" current={current} items={items} />
                                     <div style={contentStyle}>
+                                        {current == 0 &&
+                                            <div className='tab-panel'>
+                                                <Stack direction='row' className='form-field' spacing={4}>
+                                                    <Field name='date_out' validate={validate}>
+                                                        {({ field, form }) => (
+                                                            <FormControl isInvalid={form.errors.date_out && form.touched.date_out}>
+                                                                <FormLabel>
+                                                                    <h1 className='form-label requeried'>Fecha de viaje</h1>
+                                                                </FormLabel>
+                                                                <Input
+                                                                    {...field}
+                                                                    size='sm'
+                                                                    type='date'
+                                                                    min={yesterday}
+                                                                    value={selectedDate}
+                                                                    onChange={(e) => {
+                                                                        setSelectedDate(e.target.value);
+                                                                        form.setFieldValue('date_out', e.target.value);
+                                                                    }}
+                                                                />
+                                                                {form.errors.date_out && <h1 className='form-error'>{form.errors.date_out}</h1>}
+                                                            </FormControl>
+                                                        )}
+                                                    </Field>
+                                                    <FormControl isInvalid={props.errors.id_route && props.touched.id_route}>
+                                                        <FormLabel>
+                                                            <h1 className="form-label requeried">Ruta predefinida</h1>
+                                                        </FormLabel>
+                                                        <Field size='sm' name="id_route" validate={validate}>
+                                                            {({ field }) => (
+                                                                <Select
+                                                                    {...field}
+                                                                    placeholder="Seleccionar"
+                                                                    onChange={(e) => {
+                                                                        props.setFieldValue('id_route', e.target.value);
+                                                                        setRouteSeleccionado(e.target.value);
+                                                                    }}
+                                                                    size='sm'
+                                                                >
+                                                                    {routes.map((item, index) => (
+                                                                        <option key={`ore-${item?.id}-${index}`} value={item?.id}>
+                                                                            {item?.name} | {item?.description}
+                                                                        </option>
+                                                                    ))}
+                                                                </Select>
+                                                            )}
+                                                        </Field>
+                                                    </FormControl>
+                                                </Stack>
+                                                <Stack direction='row' className='form-field' spacing={4}>
+                                                    <FormControl isInvalid={props.errors.id_truck && props.touched.id_truck}>
+                                                        <FormLabel>
+                                                            <h1 className='form-label requeried'>Vehículo</h1>
+                                                        </FormLabel>
+                                                        <Field size='sm' as={Select} name="id_truck" placeholder="Seleccionar" validate={validate}>
+                                                            {trucks.map((item, index) => (
+                                                                <option key={`option-trucks-event-${item?.id}-${index}`} value={item?.id}>
+                                                                    {item?.no_econ} | {item?.brand} | {item?.model}
+                                                                </option>
+                                                            ))}
+                                                        </Field>
+                                                        {props.errors.id_truck && <h1 className='form-error'>{props.errors.id_truck}</h1>}
+                                                    </FormControl>
+                                                    <FormControl isInvalid={props.errors.id_user && props.touched.id_user}>
+                                                        <FormLabel>
+                                                            <h1 className='form-label requeried'>Asignado a</h1>
+                                                        </FormLabel>
+                                                        <Field size='sm' as={Select} name="id_user" placeholder="Seleccionar" validate={validate}>
+                                                            {drivers.map((item, index) => (
+                                                                <option key={`option-drivers-event-${item?.id}-${index}`} value={item?.id}>
+                                                                    {item?.name} {item?.last_name} | {item?.no_econ}
+                                                                </option>
+                                                            ))}
+                                                        </Field>
+                                                        {props.errors.id_user && <h1 className='form-error'>{props.errors.id_user}</h1>}
+                                                        <h1 className='form-helper'>Solo usuarios con rol de Conductor</h1>
+                                                    </FormControl>
+                                                </Stack>
+                                                {route_seleccionado &&
+                                                    <Stack mt={2}>
+                                                        <h1 className='title-card-form-no-space'>Resumen de costos</h1>
+                                                        <HStack align='center' justifyContent='space-between' direction='row'>
+                                                            <h1 className='smaller'>Costo aprox.</h1>
+                                                            <h1 className='smaller right'>$ {getCurrencyMoney(selectedRoute?.cost)}</h1>
+                                                        </HStack>
+                                                        <HStack align='center' justifyContent='space-between' direction='row'>
+                                                            <h1 className='smaller'>Gasolina</h1>
+                                                            <Field name='gasoline'>
+                                                                {({ field, form }) => (
+                                                                    <FormControl>
+                                                                        <NumberInput size='sm' defaultValue={field.value}>
+                                                                            <NumberInputField {...field} placeholder='Cantidad' />
+                                                                            <NumberInputStepper>
+                                                                                <NumberIncrementStepper />
+                                                                                <NumberDecrementStepper />
+                                                                            </NumberInputStepper>
+                                                                        </NumberInput>
+                                                                    </FormControl>
+                                                                )}
+                                                            </Field>
+                                                        </HStack>
+                                                        <HStack align='center' justifyContent='space-between' direction='row'>
+                                                            <h1 className='smaller'>Casetas</h1>
+                                                            <Field name='stand'>
+                                                                {({ field, form }) => (
+                                                                    <FormControl>
+                                                                        <NumberInput size='sm' defaultValue={field.value}>
+                                                                            <NumberInputField {...field} placeholder='Cantidad' />
+                                                                            <NumberInputStepper>
+                                                                                <NumberIncrementStepper />
+                                                                                <NumberDecrementStepper />
+                                                                            </NumberInputStepper>
+                                                                        </NumberInput>
+                                                                    </FormControl>
+                                                                )}
+                                                            </Field>
+                                                        </HStack>
+                                                        <HStack align='center' justifyContent='space-between' direction='row'>
+                                                            <h1 className='smaller'>Operador (sueldo)</h1>
+                                                            <Field name='operator'>
+                                                                {({ field, form }) => (
+                                                                    <FormControl>
+                                                                        <NumberInput size='sm' defaultValue={field.value}>
+                                                                            <NumberInputField {...field} placeholder='Cantidad' />
+                                                                            <NumberInputStepper>
+                                                                                <NumberIncrementStepper />
+                                                                                <NumberDecrementStepper />
+                                                                            </NumberInputStepper>
+                                                                        </NumberInput>
+                                                                    </FormControl>
+                                                                )}
+                                                            </Field>
+                                                        </HStack>
+                                                        <HStack align='center' justifyContent='space-between' direction='row'>
+                                                            <h1 className='smaller'>Otros gastos</h1>
+                                                            <Field name='cost'>
+                                                                {({ field, form }) => (
+                                                                    <FormControl>
+                                                                        <NumberInput size='sm' defaultValue={field.value}>
+                                                                            <NumberInputField {...field} placeholder='Cantidad' />
+                                                                            <NumberInputStepper>
+                                                                                <NumberIncrementStepper />
+                                                                                <NumberDecrementStepper />
+                                                                            </NumberInputStepper>
+                                                                        </NumberInput>
+                                                                    </FormControl>
+                                                                )}
+                                                            </Field>
+                                                        </HStack>
+                                                        <HStack align='center' justifyContent='space-between' direction='row' mb={2}>
+                                                            <h1 className='smaller'>Costo total</h1>
+                                                            <h1 className='smaller right'>$ {getCurrencyMoney(selectedRoute?.cost + parseFloat(props?.values?.cost || 0) + parseFloat(props?.values?.gasoline || 0) + parseFloat(props?.values?.stand || 0) + parseFloat(props?.values?.operator || 0))}</h1>
+                                                        </HStack>
+                                                    </Stack>
+                                                }
+                                            </div>
+                                        }
+
                                         {current == 1 &&
                                             <div className='tab-panel'>
                                                 {/*validePDF*/}
@@ -695,6 +934,22 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                             </div>
 
                                         }
+                                        {current == 3 &&
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 15, padding: '25px 50px' }}>
+                                                <Descriptions
+                                                    title={`Detalles`} size={'small'} bordered layout="vertical"
+                                                    items={[
+                                                        { key: '1', label: 'Fecha de viaje', children: moment(props.values?.date_out).format('DD-MM-YYYY HH:MM') },
+                                                        { key: '2', label: 'Ruta predefinida', children: routes.find(item__ => item__?.id == props.values?.id_route)?.name || '', span: 2 },
+                                                        { key: '3', label: 'Vehículo', children: trucks.find(item__ => item__?.id == props.values?.id_truck)?.no_econ || '' },
+                                                        { key: '4', label: 'Operador', children: drivers.find(item__ => item__?.id == props.values?.id_user)?.no_econ || '', span: 2 },
+                                                        { key: '8', label: 'Costo total ($)', children: '$ ' + getCurrencyMoney(selectedRoute?.cost + parseFloat(props?.values?.cost || 0) + parseFloat(props?.values?.gasoline || 0) + parseFloat(props?.values?.stand || 0) + parseFloat(props?.values?.operator || 0)) },
+                                                    ]}
+                                                />
+                                                <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />
+                                            </div>
+
+                                        }
                                     </div>
                                 </div>
                                 <Spin spinning={validePDF} fullscreen />
@@ -758,4 +1013,4 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
     );
 };
 
-export default CreateEventModal
+export default CreateEventModal;

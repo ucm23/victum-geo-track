@@ -152,7 +152,7 @@ const BuzonCFDi = ({ }) => {
                     <Dropdown menu={{
                         items: [
                             { label: <a onClick={() => handleUpdateItem({ item })}>Ver detalles</a>, icon: <EyeOutlined /> },
-                            { label: <a onClick={() => handleUpdateItem({ item })}>Cambiar estado</a>, icon: <EditOutlined /> },
+                            /*{ label: <a onClick={() => handleUpdateItem({ item })}>Cambiar estado</a>, icon: <EditOutlined /> },*/
                             { label: <a onClick={() => downloadFile({ id: item?.order_id, type: 'xml' })}>Descargar XML</a>, icon: <FileProtectOutlined /> },
                             { label: <a onClick={() => downloadFile({ id: item?.order_id, type: 'pdf' })}>Descargar PDF</a>, icon: <FilePdfOutlined /> }
                         ]

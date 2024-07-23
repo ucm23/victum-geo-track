@@ -13,17 +13,22 @@ import {
     Input,
     FormControl,
     FormLabel,
-    Badge
+    Badge,
+    useDisclosure,
+    Modal,
+    ModalOverlay,
+    ModalContent,
 } from '@chakra-ui/react';
 import { supabase } from '../../utils/supabase';
 import { getCurrencyMoney } from '../../utils/moment-config';
 import { Breadcrumb, Descriptions, notification, Button, Tooltip, Checkbox, Timeline, Alert } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined, ProfileOutlined, FileTextOutlined, ArrowLeftOutlined, ShareAltOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import moment from 'moment/moment';
 import { Field, Form, Formik } from 'formik'
 import LoaderList from '../../components/LoaderList';;
 import { useSelector } from 'react-redux';
+import ReplaceDocsModal from './ReplaceDocsModal';
+
 
 const messagesNotification = {
     success: {
@@ -37,13 +42,14 @@ const messagesNotification = {
 
 const CreateEvent = ({ }) => {
 
-    //const information_user = useSelector(state => state.login.information_user);
-    //const { company_id } = information_user;
-
+    const information_user = useSelector(state => state.login.information_user);
+    const { company_id } = information_user;
+    const [upList, setUpList] = useState(true);
     //const { getInputProps } = useNumberInput({ step: 1, defaultValue: 0, min: 1 })
     //const navigate = useNavigate();
     const location = useLocation();
     const { item } = location.state || {};
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     //const input = getInputProps()
     const [tabIndex, setTabIndex] = useState(0)
@@ -55,6 +61,7 @@ const CreateEvent = ({ }) => {
     const [trucks, setTrucks] = useState([]);
     const [routes, setRoutes] = useState([]);
     const [status, setStatus] = useState([]);
+    const [filesHistory, setFilesHistory] = useState([]);
     const [files, setFiles] = useState([]);
     //const { isOpen, onOpen, onClose } = useDisclosure()
     //const [items, setItems] = useState([]);
@@ -81,10 +88,15 @@ const CreateEvent = ({ }) => {
         getDatas()
     }, []);
 
-    const getDatas = async () => {
+    useEffect(() => {
+        if (upList) getDocs()
+    }, [upList]);
+
+    const getDocs = async () => {
         let response_files = await fetch(`https://api-metrix.victum-re.online/geo_truck/travel_files?travel_id=${item?.id}`);
         let data_files = await response_files.text();
         let files = JSON.parse(data_files)
+        setFilesHistory(files)
         //console.log("🚀 ~ getDatas ~ files:", files)
         const files__ = item?.files.map(i => {
             const file = files.data.find(fi => fi?.id === i?.id )
@@ -96,10 +108,15 @@ const CreateEvent = ({ }) => {
         console.log("🚀 ~ getDatas ~ files__:", files__)
         const { data } = await supabase.from('travel').update({ files: files?.data}).eq('id', item?.id).select()
         console.log("🚀 ~ travel_final:", data)
+        
         const files_ = files?.data.filter(item__ => item__?.active === true)
         setFiles(files_)
         console.log("🚀 ~ getDatas ~ item?.files:", item?.files)
         console.log("🚀 ~ getDatas ~ item?.files:", files_)
+        setUpList(false)
+    }
+
+    const getDatas = async () => {
         setOrder([
             {
                 key: '1',
@@ -389,7 +406,7 @@ const CreateEvent = ({ }) => {
                                                                             <td className='p2 th-center'>{moment(item_?.updated_at).format('DD-MM-YYYY h:mm:ss')}</td>
                                                                             <td className='th-center p2' style={{ display: 'flex', gap: 3, justifyContent: 'center' }}>
                                                                                 <Button icon={<DownloadOutlined />} onClick={() => downloadFile(item_?.id)} />
-                                                                                <Button disabled={item?.days || item?.status < 3} icon={<UploadOutlined />} onClick={() => downloadFile(item_?.id)} />
+                                                                                <Button disabled={item?.status > 3} icon={<UploadOutlined />} onClick={() => onOpen()} />
                                                                             </td>
                                                                             <td className='p2 th-center'>
                                                                                 <Checkbox
@@ -492,6 +509,19 @@ const CreateEvent = ({ }) => {
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
+                <Modal onClose={onClose} size={'5xl'} isOpen={isOpen} closeOnOverlayClick={false} scrollBehavior={'outside'} isCentered>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ReplaceDocsModal
+                            company_id={company_id}
+                            onClose={onClose}
+                            item={item}
+                            files={files}
+                            filesHistory={filesHistory}
+                            setUpList={setUpList}
+                        />
+                    </ModalContent>
+                </Modal>
             </div>
         </div>
     );
