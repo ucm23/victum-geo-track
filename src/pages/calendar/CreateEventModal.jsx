@@ -515,7 +515,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                                     {...field}
                                                                     size='sm'
                                                                     type='date'
-                                                                    min={yesterday}
+                                                                    //min={yesterday}
                                                                     value={selectedDate}
                                                                     onChange={(e) => {
                                                                         setSelectedDate(e.target.value);
