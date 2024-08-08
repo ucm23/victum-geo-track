@@ -171,11 +171,25 @@ const DetailsBuzon = ({ company_id, onClose, item, setUpList }) => {
                                         <h1 className='item-list-tab'> Información</h1>
                                     </Tab>
                                     <Tab>
+                                        <ProfileOutlined />
+                                        <h1 className='item-list-tab'> Costo de Ingreso</h1>
+                                    </Tab>
+                                    <Tab>
                                         <FileTextOutlined />
                                         <h1 className='item-list-tab'> Historial</h1>
                                     </Tab>
                                 </TabList>
                                 <TabPanels style={{ marginTop: 4 }}>
+                                    <TabPanel>
+                                        <div style={{ height: 'calc(100vh - 350px)', width: '100%', paddingTop: 10 }}>
+                                            <Descriptions
+                                                size={'small'}
+                                                bordered
+                                                layout="vertical"
+                                                items={invoiceDataView}
+                                            />
+                                        </div>
+                                    </TabPanel>
                                     <TabPanel>
                                         <div style={{ height: 'calc(100vh - 350px)', width: '100%', paddingTop: 10 }}>
                                             <Descriptions

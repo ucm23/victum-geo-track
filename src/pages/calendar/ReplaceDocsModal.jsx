@@ -795,9 +795,9 @@ console.log("🚀 ~ item:", item)
                                             loading={isSubmitting}
                                             disabled={isSubmitting}
                                             onClick={() => {
-                                                if (value_total == invoiceData?.total) {
+                                                //if (value_total == invoiceData?.total) {
                                                     saveAllx2()
-                                                } else {
+                                                /*} else {
                                                     openNotification(
                                                         'warning',
                                                         <h1>
@@ -806,7 +806,7 @@ console.log("🚀 ~ item:", item)
                                                             <br />Total obtenido desde el XML: <strong>${getCurrencyMoney(invoiceData?.total)}</strong>
                                                         </h1>
                                                     )
-                                                }
+                                                }*/
                                             }}
                                         >
                                             Guardar

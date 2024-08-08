@@ -190,7 +190,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
             if (userError) return;
             if (users.length >= 0) setDrivers(users)
         }
-            
+
     }
 
     async function getRoutes() {
@@ -946,6 +946,23 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                         { key: '8', label: 'Costo total ($)', children: '$ ' + getCurrencyMoney(selectedRoute?.cost + parseFloat(props?.values?.cost || 0) + parseFloat(props?.values?.gasoline || 0) + parseFloat(props?.values?.stand || 0) + parseFloat(props?.values?.operator || 0)) },
                                                     ]}
                                                 />
+                                                <Descriptions
+                                                    title={`Ingreso de cobro`} size={'small'} bordered layout="vertical"
+                                                    items={[
+                                                        { key: '1', label: 'FLT-FLTE', children: 'FLT-SEG' },
+                                                        { key: '2', label: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_flete.replace(/,/g, ''))), children: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_seg.replace(/,/g, ''))), span: 2 },
+                                                        { key: '3', label: 'FLT-O. LIN', children: 'FLT-REC' },
+                                                        { key: '4', label: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_o_lin.replace(/,/g, ''))), children: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_rec.replace(/,/g, ''))), span: 2 },
+                                                        { key: '5', label: 'LT-E. DOM', children: 'FLT-M. CAR' },
+                                                        { key: '6', label: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_e_dom.replace(/,/g, ''))), children: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_m_car.replace(/,/g, ''))), span: 2 },
+                                                        { key: '7', label: 'FLT-M. DES', children: 'SUB-TOTAL' },
+                                                        { key: '8', label: '$ ' + getCurrencyMoney(parseFloat(cost?.flt_m_des.replace(/,/g, ''))), children: <strong>$ {getCurrencyMoney(value_sub)}</strong>, span: 2 },
+                                                        { key: '9', label: 'IVA', children: 'RET. IVA' },
+                                                        { key: '8', label: '$ ' + getCurrencyMoney(value_iva), children: '$ ' + getCurrencyMoney(value_retiva), span: 2 },
+                                                        { key: '9', label: 'TOTAL', },
+                                                        { key: '8', label: <strong style={{ color: 'black' }}>$ {getCurrencyMoney(value_total)}</strong>},
+                                                    ]}
+                                                />
                                                 <Descriptions title={`Factura ${invoiceData?.folio} - ${invoiceData?.receptorNombre}`} size={'small'} bordered layout="vertical" items={invoiceDataView} />
                                             </div>
 
@@ -974,9 +991,9 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                 if (current == 0) props.submitForm()
                                                 if (current == 1) saveAll()
                                                 if (current == 2) {
-                                                    if (value_total == invoiceData?.total) {
-                                                        next()
-                                                    } else {
+                                                    //if (value_total == invoiceData?.total) {
+                                                    next()
+                                                    /*} else {
                                                         openNotification(
                                                             'warning',
                                                             <h1>
@@ -985,7 +1002,7 @@ const CreateEventModal = ({ company_id, onClose, item, setUpList }) => {
                                                                 <br />Total obtenido desde el XML: <strong>${getCurrencyMoney(invoiceData?.total)}</strong>
                                                             </h1>
                                                         )
-                                                    }
+                                                    }*/
 
                                                 }
                                             }}

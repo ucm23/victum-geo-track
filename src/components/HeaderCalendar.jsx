@@ -5,8 +5,6 @@ import { Dropdown, message } from 'antd';
 
 export default function HeaderCalendar({ title, handle, exportToExcel, backgroundColor }) {
 
-    
-
     const items = [
         {
             label: 'Descargar reporte EXCEL',

@@ -42,7 +42,7 @@ const Index = ({ }) => {
 
     return (
         <div style={{ padding: 20, height: '100%' }}>
-            <h1 className='welcome-statistic'>Bienvenido, ¡{information_user?.name} {information_user?.last_name}!4</h1>
+            <h1 className='welcome-statistic'>Bienvenido, ¡{information_user?.name} {information_user?.last_name}!</h1>
             <h1 style={{ color: 'gray', fontWeight: '300', paddingBottom: 18 }}>En seguida te ponemos al día.</h1>
             {!loader ? <LoaderList /> :
                 <>
